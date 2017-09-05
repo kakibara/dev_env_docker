@@ -97,7 +97,7 @@ RUN apt-get -y install language-pack-ja-base language-pack-ja ibus-mozc \
 &&  cd .. \
 &&  rm -rf fonts \
 &&  fc-cache -vf ~/.local/share/fonts/
-ENV export LC_ALL='ja_JP.UTF-8'
+ENV LC_ALL='ja_JP.UTF-8'
 
 ### install fish
 RUN add-apt-repository ppa:fish-shell/release-2 \
