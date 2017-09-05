@@ -90,11 +90,14 @@ RUN curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add - \
 
 ## install fish shell and arounds
 ### install powerline fonts
-RUN git clone https://github.com/powerline/fonts.git --depth=1 \
+RUN apt-get -y install language-pack-ja-base language-pack-ja ibus-mozc \
+&&  git clone https://github.com/powerline/fonts.git --depth=1 \
 &&  cd fonts  \
 &&  ./install.sh  \
 &&  cd .. \
-&&  rm -rf fonts 
+&&  rm -rf fonts \
+&&  fc-cache -vf ~/.local/share/fonts/
+ENV export LC_ALL='ja_JP.UTF-8'
 
 ### install fish
 RUN add-apt-repository ppa:fish-shell/release-2 \
