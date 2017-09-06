@@ -100,13 +100,18 @@ RUN apt-get -y install language-pack-ja-base language-pack-ja ibus-mozc \
 ENV LC_ALL='ja_JP.UTF-8'
 
 ### install fish
+WORKDIR /root
+ADD config.fish /root/.config/fish/
+ADD fish_config.sh /root/
 RUN add-apt-repository ppa:fish-shell/release-2 \
 &&  apt-get update \
 &&  apt-get install -y fish \
-## install fisherman
-&& curl -Lo ~/.config/fish/functions/fisher.fish --create-dirs git.io/fisher 
-# ADD fish.sh /
-# RUN chmod a+x fish.sh \
-# &&  sh fish.sh
-## set fish shell settings
+### install fisherman
+&& curl -Lo ~/.config/fish/functions/fisher.fish --create-dirs git.io/fisher \
+&&  chmod +x fish_config.sh \
+&&  ./fish_config.sh \
+&&  rm fish_config.sh
+
+### install editor
+RUN apt-get install -y vim
 WORKDIR /root
