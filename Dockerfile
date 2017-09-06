@@ -110,8 +110,12 @@ RUN add-apt-repository ppa:fish-shell/release-2 \
 && curl -Lo ~/.config/fish/functions/fisher.fish --create-dirs git.io/fisher \
 &&  chmod +x fish_config.sh \
 &&  ./fish_config.sh \
-&&  rm fish_config.sh
-
+&&  rm fish_config.sh \
+&&  wget https://github.com/peco/peco/releases/download/v0.5.1/peco_linux_amd64.tar.gz \
+&&  tar -zxvf peco_linux_amd64.tar.gz \
+&&  mv peco_linux_amd64/peco /usr/local/bin/ \
+&&  rm -r peco-linux-amd64/ \
+&&  rm peco_linux_amd64.tar.gz
 ### install editor
 RUN apt-get install -y vim
 WORKDIR /root
