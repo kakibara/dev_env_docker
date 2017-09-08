@@ -106,16 +106,21 @@ ADD fish_config.sh /root/
 RUN add-apt-repository ppa:fish-shell/release-2 \
 &&  apt-get update \
 &&  apt-get install -y fish \
-### install fisherman
+#### install fisherman
 && curl -Lo ~/.config/fish/functions/fisher.fish --create-dirs git.io/fisher \
 &&  chmod +x fish_config.sh \
 &&  ./fish_config.sh \
 &&  rm fish_config.sh \
+#### install peco
 &&  wget https://github.com/peco/peco/releases/download/v0.5.1/peco_linux_amd64.tar.gz \
 &&  tar -zxvf peco_linux_amd64.tar.gz \
 &&  mv peco_linux_amd64/peco /usr/local/bin/ \
-&&  rm -r peco-linux-amd64/ \
-&&  rm peco_linux_amd64.tar.gz
-### install editor
-RUN apt-get install -y vim
+&&  rm -r peco_linux_amd64/ \
+&&  rm peco_linux_amd64.tar.gz \
+
+# install editor
+&&  apt-get install -y vim \
+# install rsub for sublime text via ssh
+&&  wget -O /usr/local/bin/rsub https://raw.github.com/aurora/rmate/master/rmate \
+&&  chmod +x /usr/local/bin/rsub
 WORKDIR /root
