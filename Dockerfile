@@ -124,3 +124,5 @@ RUN add-apt-repository ppa:fish-shell/release-2 \
 &&  wget -O /usr/local/bin/rsub https://raw.github.com/aurora/rmate/master/rmate \
 &&  chmod +x /usr/local/bin/rsub
 WORKDIR /root
+
+ADD jupyter_notebook_config.py /root/.jupyter/
