@@ -1,4 +1,4 @@
-FROM ndivia/cuda:8.0-cudnn6-runtime-ubuntu16.04
+FROM nvidia/cuda:8.0-cudnn6-devel-ubuntu16.04
 
 MAINTAINER Sakakibara Akiyuki <moritarizumu@gmail.com>
 
@@ -71,6 +71,7 @@ RUN pip3 install tensorflow-gpu \
 &&  pip3 install jupyter \
 &&  pip install jupyterlab \
 &&  jupyter serverextension enable --py jupyterlab --sys-prefix
+ADD jupyter_notebook_config.py /root/.jupyter/
 
 # tools env
 ### package needed
@@ -125,4 +126,3 @@ RUN add-apt-repository ppa:fish-shell/release-2 \
 &&  chmod +x /usr/local/bin/rsub
 WORKDIR /root
 
-ADD jupyter_notebook_config.py /root/.jupyter/
