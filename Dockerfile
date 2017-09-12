@@ -38,8 +38,10 @@ RUN apt-get install -y cmake build-essential libgtk2.0-dev\
                        libjasper-dev libdc1394-22-dev libeigen3-dev libtbb-dev
 # cal env
 ## install opencv with CUDA
-WORKDIR /opencv
-RUN  wget https://github.com/opencv/opencv/archive/${OPENCV_VERSION}.zip \
+WORKDIR /temp
+RUN mkdir opencv \
+&&  cd opencv \
+&&  wget https://github.com/opencv/opencv/archive/${OPENCV_VERSION}.zip \
 &&  unzip ${OPENCV_VERSION}.zip \
 &&  rm ${OPENCV_VERSION}.zip \
 &&  wget https://github.com/opencv/opencv_contrib/archive/${OPENCV_VERSION}.zip \
@@ -80,8 +82,8 @@ RUN  wget https://github.com/opencv/opencv/archive/${OPENCV_VERSION}.zip \
 &&  make -j$(nproc) \
 &&  make install \
 &&  cp lib/python3/cv2.* /usr/local/lib/python3.5/dist-packages/ \
-&&  cd / \
-&&  rm -rf /opencv
+&&  cd .. \
+&&  rm -rf opencv
 ENV LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib
 
 ## tensorflow and jupyter notebook lab
@@ -102,6 +104,7 @@ RUN curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add - \
 
 ## install fish shell and arounds
 ### install powerline fonts
+WORKDIR /temp
 RUN apt-get -y install language-pack-ja-base language-pack-ja ibus-mozc \
 &&  git clone https://github.com/powerline/fonts.git --depth=1 \
 &&  cd fonts  \
@@ -112,9 +115,9 @@ RUN apt-get -y install language-pack-ja-base language-pack-ja ibus-mozc \
 ENV LC_ALL='ja_JP.UTF-8'
 
 ### install fish
-WORKDIR /fish
+WORKDIR /temp
 ADD config.fish /root/.config/fish/
-ADD fish_config.sh /fish
+ADD fish_config.sh /temp
 RUN add-apt-repository ppa:fish-shell/release-2 \
 &&  apt-get update \
 &&  apt-get install -y fish \
@@ -127,7 +130,7 @@ RUN add-apt-repository ppa:fish-shell/release-2 \
 &&  wget https://github.com/peco/peco/releases/download/v0.5.1/peco_linux_amd64.tar.gz \
 &&  tar -zxvf peco_linux_amd64.tar.gz \
 &&  mv peco_linux_amd64/peco /usr/local/bin/ \
-&&  rm -r peco_linux_amd64/ \
+&&  rm -rf peco_linux_amd64 \
 &&  rm peco_linux_amd64.tar.gz \
 
 # install editor
