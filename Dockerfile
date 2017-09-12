@@ -10,26 +10,29 @@ RUN apt-get update && apt-get -y upgrade
 # cal env
 ## install opencv with CUDA
 WORKDIR /opencv
-RUN apt-get install -y wget unzip cmake \
+
+### python install
+RUN apt-get install -y python3.5-dev python-dev python-pip python3-pip \
+                       python-numpy python3-numpy \
+                       python-scipy python3-scipy \
+                       python-matplotlib python3-matplotlib \
+&&  pip install --upgrade pip \
+&&  pip3 install --upgrade pip \
+### for build opencv 
+&& apt-get install -y wget unzip cmake \
                        build-essential cmake git libgtk2.0-dev pkg-config \
                        libavcodec-dev libavformat-dev libswscale-dev \
                        libtbb2 libtbb-dev libjpeg-dev libpng-dev libtiff-dev \
                        libjasper-dev libdc1394-22-dev libeigen3-dev libtbb-dev \
-                       python3.5-dev python-dev python-pip python3-pip \
-                       python-numpy python-scipy python-matplotlib \
 &&  wget https://github.com/opencv/opencv/archive/${OPENCV_VERSION}.zip \
 &&  unzip ${OPENCV_VERSION}.zip \
 &&  rm ${OPENCV_VERSION}.zip \
 &&  wget https://github.com/opencv/opencv_contrib/archive/${OPENCV_VERSION}.zip \
 &&  unzip ${OPENCV_VERSION}.zip \
 &&  rm ${OPENCV_VERSION}.zip \
-&&  mkdir opencv-${OPENCV_VERSION}/cmake_binary
-WORKDIR /opencv/opencv-${OPENCV_VERSION}/cmake_binary
-RUN pip install --upgrade pip \
-&&  pip3 install --upgrade pip \
-&&  pip install numpy \
-&&  pip3 install numpy 
-RUN cmake -D CMAKE_BUILD_TYPE=RELEASE \
+&&  mkdir opencv-${OPENCV_VERSION}/cmake_binary \
+&&  cd /opencv/opencv-${OPENCV_VERSION}/cmake_binary \
+&&  cmake -D CMAKE_BUILD_TYPE=RELEASE \
       -D CMAKE_INSTALL_PREFIX=/usr/local \
       -D BUILD_opencv_python2=ON \
       -D BUILD_NEW_PYTHON_SUPPORT=ON \
@@ -70,7 +73,8 @@ ENV LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib
 RUN pip3 install tensorflow-gpu \
 &&  pip3 install jupyter \
 &&  pip install jupyterlab \
-&&  jupyter serverextension enable --py jupyterlab --sys-prefix
+&&  jupyter serverextension enable --py jupyterlab --sys-prefix \
+&&  python3 -m IPython kernelspec install-self
 ADD jupyter_notebook_config.py /root/.jupyter/
 
 # tools env
@@ -101,7 +105,7 @@ RUN apt-get -y install language-pack-ja-base language-pack-ja ibus-mozc \
 ENV LC_ALL='ja_JP.UTF-8'
 
 ### install fish
-WORKDIR /root
+WORKDIR /fish
 ADD config.fish /root/.config/fish/
 ADD fish_config.sh /root/
 RUN add-apt-repository ppa:fish-shell/release-2 \
