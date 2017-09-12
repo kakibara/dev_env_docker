@@ -14,8 +14,8 @@ LABEL com.nvidia.cudnn.version="${CUDNN_VERSION}"
 RUN apt-get update && apt-get -y upgrade \
 &&  apt-get install -y --no-install-recommends \
             libcudnn6=$CUDNN_VERSION-1+cuda8.0 \
-            libcudnn6-dev=$CUDNN_VERSION-1+cuda8.0 \
-&&  rm -rf /var/lib/apt/lists/*
+            libcudnn6-dev=$CUDNN_VERSION-1+cuda8.0
+# &&  rm -rf /var/lib/apt/lists/*
 ### package needed
 RUN apt-get install -y git apt-file pkg-config wget unzip \
 &&  apt-file update \
