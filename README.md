@@ -4,9 +4,12 @@
 画像処理のためのツールを詰めたDockerfile
 GPUを使うことを前提としている
 ```
-nvidia-docker run --rm -it -p 8888:8888 sakaki/opencv /usr/bin/fish
+nvidia-docker run --rm -it -p 8888:8888 -p 52698:52698 sakaki/opencv /usr/bin/fish
 ```
 で起動する。
+- ```8888````はjupuyter notebook用
+- ```52698```はrsub(for sublime text)用
+
 
 dockerhub: https://hub.docker.com/r/sakakib/
 

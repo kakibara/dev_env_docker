@@ -38,17 +38,15 @@ RUN apt-get install -y cmake build-essential libgtk2.0-dev\
                        libjasper-dev libdc1394-22-dev libeigen3-dev libtbb-dev
 # cal env
 ## install opencv with CUDA
-WORKDIR /temp
-RUN mkdir opencv \
-&&  cd opencv \
-&&  wget https://github.com/opencv/opencv/archive/${OPENCV_VERSION}.zip \
+WORKDIR /root
+RUN wget https://github.com/opencv/opencv/archive/${OPENCV_VERSION}.zip \
 &&  unzip ${OPENCV_VERSION}.zip \
 &&  rm ${OPENCV_VERSION}.zip \
 &&  wget https://github.com/opencv/opencv_contrib/archive/${OPENCV_VERSION}.zip \
 &&  unzip ${OPENCV_VERSION}.zip \
 &&  rm ${OPENCV_VERSION}.zip \
 &&  mkdir opencv-${OPENCV_VERSION}/cmake_binary \
-&&  cd /opencv/opencv-${OPENCV_VERSION}/cmake_binary \
+&&  cd opencv-${OPENCV_VERSION}/cmake_binary \
 &&  cmake -D CMAKE_BUILD_TYPE=RELEASE \
       -D CMAKE_INSTALL_PREFIX=/usr/local \
       -D BUILD_opencv_python2=ON \
@@ -82,8 +80,8 @@ RUN mkdir opencv \
 &&  make -j$(nproc) \
 &&  make install \
 &&  cp lib/python3/cv2.* /usr/local/lib/python3.5/dist-packages/ \
-&&  cd .. \
-&&  rm -rf opencv
+&&  cd /root \
+&&  rm -rf opencv*
 ENV LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib
 
 ## tensorflow and jupyter notebook lab
@@ -104,7 +102,7 @@ RUN curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add - \
 
 ## install fish shell and arounds
 ### install powerline fonts
-WORKDIR /temp
+WORKDIR /root
 RUN apt-get -y install language-pack-ja-base language-pack-ja ibus-mozc \
 &&  git clone https://github.com/powerline/fonts.git --depth=1 \
 &&  cd fonts  \
@@ -115,9 +113,9 @@ RUN apt-get -y install language-pack-ja-base language-pack-ja ibus-mozc \
 ENV LC_ALL='ja_JP.UTF-8'
 
 ### install fish
-WORKDIR /temp
+WORKDIR /root
 ADD config.fish /root/.config/fish/
-ADD fish_config.sh /temp
+ADD fish_config.sh /root/
 RUN add-apt-repository ppa:fish-shell/release-2 \
 &&  apt-get update \
 &&  apt-get install -y fish \

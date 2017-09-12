@@ -78,7 +78,6 @@ RUN add-apt-repository ppa:fish-shell/release-2 \
 &&  rm peco_linux_amd64.tar.gz \
 
 # install editor
-
 &&  apt-get install -y vim \
 # install rsub for sublime text via ssh
 &&  wget -O /usr/local/bin/rsub https://raw.github.com/aurora/rmate/master/rmate \
