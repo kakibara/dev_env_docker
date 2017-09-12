@@ -114,7 +114,7 @@ ENV LC_ALL='ja_JP.UTF-8'
 ### install fish
 WORKDIR /fish
 ADD config.fish /root/.config/fish/
-ADD fish_config.sh /root/
+ADD fish_config.sh /fish
 RUN add-apt-repository ppa:fish-shell/release-2 \
 &&  apt-get update \
 &&  apt-get install -y fish \
