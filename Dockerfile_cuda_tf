@@ -25,7 +25,7 @@ RUN apt-get install -y git apt-file pkg-config wget unzip \
                        apt-transport-https \
 &&  add-apt-repository ppa:fkrull/deadsnakes \
 ### python install
-&&  apt-get install -y python3.6-dev python-pip python3-pip \
+&&  apt-get install -y python3.5-dev python-pip python3-pip \
                        python-numpy python3-numpy \
                        python-scipy python3-scipy \
                        python-matplotlib python3-matplotlib \
