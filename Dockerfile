@@ -23,7 +23,8 @@ RUN apt-get update && apt-get -y upgrade \
 WORKDIR /opencv
 
 ### python install
-RUN apt-get install -y python3.5-dev python-dev python-pip python3-pip \
+RUN add-apt-repository ppa:fkrull/deadsnakes \
+&&  apt-get install -y python3.6-dev python-dev python-pip python3-pip \
                        python-numpy python3-numpy \
                        python-scipy python3-scipy \
                        python-matplotlib python3-matplotlib \

@@ -18,12 +18,14 @@ RUN apt-get update && apt-get -y upgrade \
 &&  rm -rf /var/lib/apt/lists/*
 # cal env
 ## python
-RUN apt-get install -y python-pip python3-pip \
-                       python-numpy python-scipy python-matplotlib \
-                       python3-scipy python3-matplotlib \
-## tensorflow and jupyter notebook lab
+RUN add-apt-repository ppa:fkrull/deadsnakes \
+&&  apt-get install -y python3.6-dev python-dev python-pip python3-pip \
+                       python-numpy python3-numpy \
+                       python-scipy python3-scipy \
+                       python-matplotlib python3-matplotlib \
 &&  pip install --upgrade pip \
 &&  pip3 install --upgrade pip \
+## tensorflow and jupyter notebook lab
 &&  pip3 install tensorflow-gpu \
 &&  pip3 install jupyter \
 &&  pip install jupyterlab \
