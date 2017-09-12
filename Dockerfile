@@ -16,27 +16,30 @@ RUN apt-get update && apt-get -y upgrade \
             libcudnn6=$CUDNN_VERSION-1+cuda8.0 \
             libcudnn6-dev=$CUDNN_VERSION-1+cuda8.0 \
 &&  rm -rf /var/lib/apt/lists/*
-
-
-# cal env
-## install opencv with CUDA
-WORKDIR /opencv
-
+### package needed
+RUN apt-get install -y git apt-file pkg-config wget unzip \
+&&  apt-file update \
+&&  apt-file search add-apt-repository \
+&&  apt-get install -y software-properties-common \
+                       python-software-properties \
+                       apt-transport-https \
+&&  add-apt-repository ppa:fkrull/deadsnakes \
 ### python install
-RUN add-apt-repository ppa:fkrull/deadsnakes \
 &&  apt-get install -y python3.6-dev python-pip python3-pip \
                        python-numpy python3-numpy \
                        python-scipy python3-scipy \
                        python-matplotlib python3-matplotlib \
 &&  pip install --upgrade pip \
-&&  pip3 install --upgrade pip \
+&&  pip3 install --upgrade pip
 ### for build opencv 
-&& apt-get install -y wget unzip cmake \
-                       build-essential cmake git libgtk2.0-dev pkg-config \
+RUN apt-get install -y cmake build-essential libgtk2.0-dev\
                        libavcodec-dev libavformat-dev libswscale-dev \
                        libtbb2 libtbb-dev libjpeg-dev libpng-dev libtiff-dev \
-                       libjasper-dev libdc1394-22-dev libeigen3-dev libtbb-dev \
-&&  wget https://github.com/opencv/opencv/archive/${OPENCV_VERSION}.zip \
+                       libjasper-dev libdc1394-22-dev libeigen3-dev libtbb-dev
+# cal env
+## install opencv with CUDA
+WORKDIR /opencv
+RUN  wget https://github.com/opencv/opencv/archive/${OPENCV_VERSION}.zip \
 &&  unzip ${OPENCV_VERSION}.zip \
 &&  rm ${OPENCV_VERSION}.zip \
 &&  wget https://github.com/opencv/opencv_contrib/archive/${OPENCV_VERSION}.zip \
@@ -90,14 +93,6 @@ RUN pip3 install tensorflow-gpu \
 ADD jupyter_notebook_config.py /root/.jupyter/
 
 # tools env
-### package needed
-RUN apt-get install -y git \
-                       apt-file \
-&&  apt-file update \
-&&  apt-file search add-apt-repository \
-&&  apt-get install -y software-properties-common \
-                       python-software-properties \
-                       apt-transport-https
 ## install powershell
 RUN curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add - \
 &&  curl https://packages.microsoft.com/config/ubuntu/${UBUNTU_VERSION}/prod.list | tee /etc/apt/sources.list.d/microsoft.list \
