@@ -85,12 +85,15 @@ RUN wget https://github.com/opencv/opencv/archive/${OPENCV_VERSION}.zip \
 ENV LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib
 
 ## tensorflow and jupyter notebook lab
+WORKDIR /root
 RUN pip3 install tensorflow-gpu \
 &&  pip3 install jupyter \
 &&  pip install jupyterlab \
 &&  jupyter serverextension enable --py jupyterlab --sys-prefix \
 &&  python3 -m IPython kernelspec install-self \
-&&  wget https://github.com/paderijk/jupyter-password/blob/master/jupyter-password.py
+&&  wget https://github.com/paderijk/jupyter-password/archive/master.zip \
+&&  unzip jupyter-password-master.zip \
+&&  rm jupyter-password-master.zip
 ADD jupyter_notebook_config.py /root/.jupyter/
 ## set matplotlib backend
 WORKDIR /root/.config/matplotlib
