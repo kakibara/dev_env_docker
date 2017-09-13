@@ -22,7 +22,7 @@ jupyter notebookのパスワード設定にはコンテナ作成後に
 ```
 python jupyter-password.py
 ```
-を実行する。このスクリプトはhttps://github.com/paderijk/jupyter-password のものである。
+を実行する。このスクリプトは [https://github.com/paderijk/jupyter-password](https://github.com/paderijk/jupyter-password) のものである。
 
 
 ## 中身
