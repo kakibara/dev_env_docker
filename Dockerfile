@@ -91,7 +91,7 @@ RUN pip3 install tensorflow-gpu \
 &&  pip install jupyterlab \
 &&  jupyter serverextension enable --py jupyterlab --sys-prefix \
 &&  python3 -m IPython kernelspec install-self \
-&&  jupyter notebook --generate-config
+&&  jupyter notebook --generate-config --allow-root
 ADD jupyter-init-setting-python3.py /root/
 ## set matplotlib backend
 WORKDIR /root/.config/matplotlib
