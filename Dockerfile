@@ -92,8 +92,8 @@ RUN pip3 install tensorflow-gpu \
 &&  jupyter serverextension enable --py jupyterlab --sys-prefix \
 &&  python3 -m IPython kernelspec install-self \
 &&  wget https://github.com/paderijk/jupyter-password/archive/master.zip \
-&&  unzip jupyter-password-master.zip \
-&&  rm jupyter-password-master.zip
+&&  unzip master.zip \
+&&  rm master.zip
 ADD jupyter_notebook_config.py /root/.jupyter/
 ## set matplotlib backend
 WORKDIR /root/.config/matplotlib
