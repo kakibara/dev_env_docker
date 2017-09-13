@@ -92,7 +92,7 @@ RUN pip3 install tensorflow-gpu \
 &&  python3 -m IPython kernelspec install-self \
 &&  wget https://github.com/paderijk/jupyter-password/blob/master/jupyter-password.py \
 ## set matplotlib backend
-&&  echo 'backend : Qt4Agg' >> ~/.config/matplotlib/matplotlibrc
+&&  echo 'backend : Qt4Agg' >> /root/.config/matplotlib/matplotlibrc
 ADD jupyter_notebook_config.py /root/.jupyter/
 
 # tools env
@@ -123,7 +123,7 @@ RUN add-apt-repository ppa:fish-shell/release-2 \
 &&  apt-get update \
 &&  apt-get install -y fish \
 #### install fisherman
-&& curl -Lo ~/.config/fish/functions/fisher.fish --create-dirs git.io/fisher \
+&&  curl -Lo ~/.config/fish/functions/fisher.fish --create-dirs git.io/fisher \
 &&  chmod +x fish_config.sh \
 &&  ./fish_config.sh \
 &&  rm fish_config.sh \
