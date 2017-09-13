@@ -3,15 +3,27 @@
 ## 概要
 画像処理のためのツールを詰めたDockerfile
 GPUを使うことを前提としている
+## 使い方
+### イメージのプル
+イメージは[dockerhub](https://hub.docker.com/r/sakakib/)に登録している。
+
+```
+docker pull sakakib/opencv
+```
+### コンテナの作成
 ```
 nvidia-docker run --rm -it -p 8888:8888 sakakib/opencv /usr/bin/fish
 ```
-で起動する。
+
 - ```-p 8888:8888```はjupuyter notebook用
-- ```-p 52698:52698```でrsub(for sublime text)を使用可能にする
+- ```-p 52698:52698```でrsub(for sublime text)を使用可能にする。
 
+jupyter notebookのパスワード設定にはコンテナ作成後に
+```
+python jupyter-password.py
+```
+を実行する。このスクリプトはhttps://github.com/paderijk/jupyter-password のものである。
 
-dockerhub: https://hub.docker.com/r/sakakib/
 
 ## 中身
 
@@ -33,6 +45,3 @@ dockerhub: https://hub.docker.com/r/sakakib/
 摘便デフォルトのpythonを変更してください。
 jupyterはデフォルトで全てのIPからの接続を許可しています。
 jupyter notebookの初期パスワードを設定していますが、適当に変更して使ってください。
-
-ビルドに時間がかかります。
-OPENCVのコンパイルが長い(12コアのマシンで3時間程度かも...)です。
