@@ -90,11 +90,11 @@ RUN pip3 install tensorflow-gpu \
 &&  pip install jupyterlab \
 &&  jupyter serverextension enable --py jupyterlab --sys-prefix \
 &&  python3 -m IPython kernelspec install-self \
-&&  wget https://github.com/paderijk/jupyter-password/blob/master/jupyter-password.py \
-## set matplotlib backend
-&&  mkdir /root/.config/matplotlib \
-&&  echo 'backend : Qt4Agg' >> /root/.config/matplotlib/matplotlibrc
+&&  wget https://github.com/paderijk/jupyter-password/blob/master/jupyter-password.py
 ADD jupyter_notebook_config.py /root/.jupyter/
+## set matplotlib backend
+WORKDIR /root/.config/matplotlib
+RUN echo 'backend : Qt4Agg' >> /root/.config/matplotlib/matplotlibrc
 
 # tools env
 ## install powershell
