@@ -85,12 +85,19 @@ RUN wget https://github.com/opencv/opencv/archive/${OPENCV_VERSION}.zip \
 ENV LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib
 
 ## tensorflow and jupyter notebook lab
+WORKDIR /root
 RUN pip3 install tensorflow-gpu \
 &&  pip3 install jupyter \
 &&  pip install jupyterlab \
 &&  jupyter serverextension enable --py jupyterlab --sys-prefix \
 &&  python3 -m IPython kernelspec install-self
 ADD jupyter_notebook_config.py /root/.jupyter/
+&&  python3 -m IPython kernelspec install-self \
+&&  jupyter notebook --generate-config --allow-root
+ADD jupyter-init-setting-python3.py /root/
+## set matplotlib backend
+WORKDIR /root/.config/matplotlib
+RUN echo 'backend : Qt4Agg' >> /root/.config/matplotlib/matplotlibrc
 
 # tools env
 ## install powershell

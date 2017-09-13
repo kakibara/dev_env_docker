@@ -15,14 +15,15 @@ docker pull sakakib/opencv
 nvidia-docker run --rm -it -p 8888:8888 sakakib/opencv /usr/bin/fish
 ```
 
+
 - ```-p 8888:8888```はjupuyter notebook用
 - ```-p 52698:52698```でrsub(for sublime text)を使用可能にする。
+- ```jupyter-init-setting-python3.py```を実行するとjupyter notebookに以下の設定を行います。
+    - パスワードの設定
+    - 全てのipからの接続を許可する
+    - ブラウザを自動で開かなくする
+    - ```/root/```をjupyter notebookのホームディレクトリとする
 
-jupyter notebookのパスワード設定にはコンテナ作成後に
-```
-python jupyter-password.py
-```
-を実行する。このスクリプトは [https://github.com/paderijk/jupyter-password](https://github.com/paderijk/jupyter-password) のものである。
 
 
 ## 中身
@@ -33,10 +34,13 @@ python jupyter-password.py
     - opencv 3.3.0 (python3のみ)
     - python 3.5.2
     - cuda 8.0
+    - cudnn6
     - tensorflow 1.3
 - 開発ツール
     - fish shell
-    - powerfont
+        - peco
+        - ect..
+    - powerlinefont
     - jupyter notebook / lab
     - microsoft powershell
 
