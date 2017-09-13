@@ -90,8 +90,9 @@ RUN pip3 install tensorflow-gpu \
 &&  pip install jupyterlab \
 &&  jupyter serverextension enable --py jupyterlab --sys-prefix \
 &&  python3 -m IPython kernelspec install-self \
+&&  wget https://github.com/paderijk/jupyter-password/blob/master/jupyter-password.py \
 ## set matplotlib backend
-&&  echo ~/.config/matplotlib/matplotlibrc >> 'backend : Qt4Agg'
+&&  echo 'backend : Qt4Agg' >> ~/.config/matplotlib/matplotlibrc
 ADD jupyter_notebook_config.py /root/.jupyter/
 
 # tools env
