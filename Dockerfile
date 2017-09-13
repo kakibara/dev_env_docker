@@ -90,8 +90,6 @@ RUN pip3 install tensorflow-gpu \
 &&  pip3 install jupyter \
 &&  pip install jupyterlab \
 &&  jupyter serverextension enable --py jupyterlab --sys-prefix \
-&&  python3 -m IPython kernelspec install-self
-ADD jupyter_notebook_config.py /root/.jupyter/
 &&  python3 -m IPython kernelspec install-self \
 &&  jupyter notebook --generate-config --allow-root
 ADD jupyter-init-setting-python3.py /root/
