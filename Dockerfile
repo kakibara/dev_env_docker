@@ -99,6 +99,16 @@ RUN echo 'backend : Qt4Agg' >> /root/.config/matplotlib/matplotlibrc
 
 # tools env
 ## install powershell
+RUN useradd -G sudo -p `perl -e "print(crypt('hoge', 'zZ'));"` hoge
+# WORKDIR $HOME/.config/matplotlib
+RUN mkdir /home/hoge \
+&&  mkdir /home/hoge/.config \
+&&  mkdir /home/hoge/.config/matplotlib \ 
+&&  echo 'backend : Qt4Agg' >> $HOME/.config/matplotlib/matplotlibrc
+
+RUN apt-get install -y sudo
+USER hoge
+WORKDIR /home/hoge
 RUN curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add - \
 &&  curl https://packages.microsoft.com/config/ubuntu/${UBUNTU_VERSION}/prod.list | tee /etc/apt/sources.list.d/microsoft.list \
 &&  apt-get update \
@@ -142,4 +152,4 @@ RUN add-apt-repository ppa:fish-shell/release-2 \
 &&  wget -O /usr/local/bin/rsub https://raw.github.com/aurora/rmate/master/rmate \
 &&  chmod +x /usr/local/bin/rsub
 WORKDIR /root
-
+# USER hoge
