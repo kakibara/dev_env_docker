@@ -14,11 +14,14 @@ docker pull sakakib/opencv
 ```
 nvidia-docker run --rm -it -p 8888:8888 sakakib/opencv /usr/bin/fish
 ```
-
+コンテナ内での初期設定を実行する。
+```
+python3 jupyter-init-setting-python3.py
+```
 
 - ```-p 8888:8888```はjupuyter notebook用
 - ```-p 52698:52698```でrsub(for sublime text)を使用可能にする。
-- ```jupyter-init-setting-python3.py```を実行するとjupyter notebookに以下の設定を行います。
+- ```jupyter-init-setting-python3.py```はjupyter notebookに以下の設定を行います。
     - パスワードの設定
     - 全てのipからの接続を許可する
     - ブラウザを自動で開かなくする
@@ -38,7 +41,7 @@ nvidia-docker run --rm -it -p 8888:8888 sakakib/opencv /usr/bin/fish
     - tensorflow 1.3
 - 開発ツール
     - fish shell
-        - peco
+        - peco (Ctrl + r)
         - ect..
     - powerlinefont
     - jupyter notebook / lab
