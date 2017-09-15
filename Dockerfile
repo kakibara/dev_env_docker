@@ -90,17 +90,20 @@ RUN pip3 install tensorflow-gpu \
 &&  pip3 install jupyter \
 &&  pip install jupyterlab \
 &&  jupyter serverextension enable --py jupyterlab --sys-prefix \
-&&  python3 -m IPython kernelspec install-self \
-&&  jupyter notebook --generate-config --allow-root
-ADD jupyter-init-setting-python3.py /root/
-## set matplotlib backend
-WORKDIR /root/.config/matplotlib
-RUN echo 'backend : Qt4Agg' >> /root/.config/matplotlib/matplotlibrc
+&&  python3 -m IPython kernelspec install-self 
 
 # tools env
-## install powershell
+## make sudo user
+RUN apt-get install -y sudo \
+&&  echo 'ssh_user ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers \
+&&  useradd -G sudo -p `perl -e "print(crypt('hoge', 'zZ'));"` hoge \
+&&  mkdir /home/hoge \
+&&  chown test:test /home/test
 
-RUN apt-get install -y sudo
+USER hoge
+WORKDIR /home/hoge
+
+## install powershell
 RUN curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add - \
 &&  curl https://packages.microsoft.com/config/ubuntu/${UBUNTU_VERSION}/prod.list | tee /etc/apt/sources.list.d/microsoft.list \
 &&  apt-get update \
@@ -109,7 +112,6 @@ RUN curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add - \
 
 ## install fish shell and arounds
 ### install powerline fonts
-WORKDIR /root
 RUN apt-get -y install language-pack-ja-base language-pack-ja ibus-mozc \
 &&  git clone https://github.com/powerline/fonts.git --depth=1 \
 &&  cd fonts  \
@@ -120,46 +122,35 @@ RUN apt-get -y install language-pack-ja-base language-pack-ja ibus-mozc \
 ENV LC_ALL='ja_JP.UTF-8'
 
 ### install fish
-WORKDIR /root
-ADD config.fish /root/.config/fish/
-ADD fish_config.sh /root/
+ADD config.fish ~/.config/fish/
+ADD fish_config.sh ~/
 RUN add-apt-repository ppa:fish-shell/release-2 \
 &&  apt-get update \
 &&  apt-get install -y fish \
 #### install fisherman
-&& curl -Lo ~/.config/fish/functions/fisher.fish --create-dirs git.io/fisher \
+&&  curl -Lo ~/.config/fish/functions/fisher.fish --create-dirs git.io/fisher \
 &&  chmod +x fish_config.sh \
 &&  ./fish_config.sh \
 &&  rm fish_config.sh \
 #### install peco
-&&  wget https://github.com/peco/peco/releases/download/v0.5.1/peco_linux_amd64.tar.gz \
-&&  tar -zxvf peco_linux_amd64.tar.gz \
+&&  wget -O - 'https://github.com/peco/peco/releases/download/v0.5.1/peco_linux_amd64.tar.gz' | tar zxvf - \
 &&  mv peco_linux_amd64/peco /usr/local/bin/ \
 &&  rm -rf peco_linux_amd64 \
-&&  rm peco_linux_amd64.tar.gz \
 
 # install editor
 &&  apt-get install -y vim \
-# install rsub for sublime text via ssh
+## install rsub for sublime text via ssh
 &&  wget -O /usr/local/bin/rsub https://raw.github.com/aurora/rmate/master/rmate \
-&&  chmod +x /usr/local/bin/rsub
-WORKDIR /root
-# USER hoge
-
-RUN useradd -G sudo -p `perl -e "print(crypt('hoge', 'zZ'));"` hoge
-# WORKDIR $HOME/.config/matplotlib
-RUN mkdir /home/hoge \
-&&  chown test:test /home/test
-USER hoge
+&&  chmod +x /usr/local/bin/rsub \
+## set jupyter notebook
+&&  jupyter notebook --generate-config --allow-root
+ADD jupyter-init-setting-python3.py ~/
+## set matplotlib backend
 RUN mkdir ~/.config \
 &&  mkdir ~/.config/matplotlib \
 &&  echo 'backend : Qt4Agg' >> $HOME/.config/matplotlib/matplotlibrc
-# fish config
-WORKDIR /home/hoge
-ADD config.fish /home/hoge/.config/fish/
-ADD fish_config.sh /home/hoge/
 #### install fisherman
-RUN curl -Lo ~/.config/fish/functions/fisher.fish --create-dirs git.io/fisher \
-&&  chmod +x fish_config.sh \
-&&  ./fish_config.sh \
-&&  rm fish_config.sh \
+# RUN curl -Lo ~/.config/fish/functions/fisher.fish --create-dirs git.io/fisher \
+# &&  chmod +x fish_config.sh \
+# &&  ./fish_config.sh \
+# &&  rm fish_config.sh \
