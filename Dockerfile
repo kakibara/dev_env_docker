@@ -148,18 +148,20 @@ WORKDIR /root
 
 RUN useradd -G sudo -p `perl -e "print(crypt('hoge', 'zZ'));"` hoge
 # WORKDIR $HOME/.config/matplotlib
-RUN mkdir /home/hoge \
-&&  chown test:test /home/test
-USER hoge
-RUN mkdir ~/.config \
-&&  mkdir ~/.config/matplotlib \
+WORKDIR /home/hoge 
+RUN mkdir .config \
+&&  mkdir .config/matplotlib \
 &&  echo 'backend : Qt4Agg' >> $HOME/.config/matplotlib/matplotlibrc
 # fish config
-WORKDIR /home/hoge
+RUN mkdir /home/hoge/.config/fish
 ADD config.fish /home/hoge/.config/fish/
 ADD fish_config.sh /home/hoge/
 #### install fisherman
-RUN curl -Lo ~/.config/fish/functions/fisher.fish --create-dirs git.io/fisher \
-&&  chmod +x fish_config.sh \
-&&  ./fish_config.sh \
+RUN chown -R hoge:hoge /home/hoge
+USER hoge
+RUN curl -Lo ~/.config/fish/functions/fisher.fish --create-dirs git.io/fisher
+USER root
+RUN chmod +x fish_config.sh
+USER hoge
+RUN ./fish_config.sh \
 &&  rm fish_config.sh \
