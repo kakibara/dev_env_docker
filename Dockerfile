@@ -152,16 +152,17 @@ WORKDIR /home/hoge
 RUN mkdir .config \
 &&  mkdir .config/matplotlib \
 &&  echo 'backend : Qt4Agg' >> $HOME/.config/matplotlib/matplotlibrc
-# fish config
+# copy config file
 RUN mkdir /home/hoge/.config/fish
 ADD config.fish /home/hoge/.config/fish/
 ADD fish_config.sh /home/hoge/
+ADD jupyter-init-setting-python3.py /home/hoge
 #### install fisherman
 RUN chown -R hoge:hoge /home/hoge
+RUN chmod +x fish_config.sh
+
 USER hoge
 RUN curl -Lo ~/.config/fish/functions/fisher.fish --create-dirs git.io/fisher
-USER root
-RUN chmod +x fish_config.sh
-USER hoge
 RUN ./fish_config.sh \
 &&  rm fish_config.sh \
+&&  jupyter notebook --generate-config
