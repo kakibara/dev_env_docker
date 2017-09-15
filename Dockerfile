@@ -92,6 +92,14 @@ RUN pip3 install tensorflow-gpu \
 &&  jupyter serverextension enable --py jupyterlab --sys-prefix \
 &&  python3 -m IPython kernelspec install-self 
 
+
+## install powershell
+RUN curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add - \
+&&  curl https://packages.microsoft.com/config/ubuntu/${UBUNTU_VERSION}/prod.list | tee /etc/apt/sources.list.d/microsoft.list \
+&&  apt-get update \
+&&  apt-get install -y powershell \
+&&  powershell
+
 # tools env
 ## make sudo user
 RUN apt-get install -y sudo \
@@ -103,16 +111,9 @@ RUN apt-get install -y sudo \
 USER hoge
 WORKDIR /home/hoge
 
-## install powershell
-RUN curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add - \
-&&  curl https://packages.microsoft.com/config/ubuntu/${UBUNTU_VERSION}/prod.list | tee /etc/apt/sources.list.d/microsoft.list \
-&&  apt-get update \
-&&  apt-get install -y powershell \
-&&  powershell
-
 ## install fish shell and arounds
 ### install powerline fonts
-RUN apt-get -y install language-pack-ja-base language-pack-ja ibus-mozc \
+RUN sudo apt-get -y install language-pack-ja-base language-pack-ja ibus-mozc \
 &&  git clone https://github.com/powerline/fonts.git --depth=1 \
 &&  cd fonts  \
 &&  ./install.sh  \
@@ -122,9 +123,11 @@ RUN apt-get -y install language-pack-ja-base language-pack-ja ibus-mozc \
 ENV LC_ALL='ja_JP.UTF-8'
 
 ### install fish
+RUN mkdir ~/.config/fish
 ADD config.fish ~/.config/fish/
 ADD fish_config.sh ~/
-RUN add-apt-repository ppa:fish-shell/release-2 \
+RUN chmod +x fish_config.sh \
+&&  add-apt-repository ppa:fish-shell/release-2 \
 &&  apt-get update \
 &&  apt-get install -y fish \
 #### install fisherman
@@ -143,33 +146,9 @@ RUN add-apt-repository ppa:fish-shell/release-2 \
 &&  wget -O /usr/local/bin/rsub https://raw.github.com/aurora/rmate/master/rmate \
 &&  chmod +x /usr/local/bin/rsub \
 ## set jupyter notebook
-&&  jupyter notebook --generate-config --allow-root
+&&  jupyter notebook --generate-config
 ADD jupyter-init-setting-python3.py ~/
 ## set matplotlib backend
 RUN mkdir ~/.config \
 &&  mkdir ~/.config/matplotlib \
 &&  echo 'backend : Qt4Agg' >> $HOME/.config/matplotlib/matplotlibrc
-#### install fisherman
-RUN curl -Lo ~/.config/fish/functions/fisher.fish --create-dirs git.io/fisher \
-&&  chmod +x fish_config.sh \
-&&  ./fish_config.sh \
-&&  rm fish_config.sh 
-# USER hoge
-
-RUN mkdir .config \
-&&  mkdir .config/matplotlib \
-&&  echo 'backend : Qt4Agg' >> $HOME/.config/matplotlib/matplotlibrc
-# copy config file
-RUN mkdir /home/hoge/.config/fish
-ADD config.fish /home/hoge/.config/fish/
-ADD fish_config.sh /home/hoge/
-ADD jupyter-init-setting-python3.py /home/hoge
-#### install fisherman
-RUN chown -R hoge:hoge /home/hoge
-RUN chmod +x fish_config.sh
-
-USER hoge
-RUN curl -Lo ~/.config/fish/functions/fisher.fish --create-dirs git.io/fisher
-RUN ./fish_config.sh \
-&&  rm fish_config.sh \
-&&  jupyter notebook --generate-config
