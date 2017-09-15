@@ -99,12 +99,6 @@ RUN echo 'backend : Qt4Agg' >> /root/.config/matplotlib/matplotlibrc
 
 # tools env
 ## install powershell
-RUN useradd -G sudo -p `perl -e "print(crypt('hoge', 'zZ'));"` hoge
-# WORKDIR $HOME/.config/matplotlib
-RUN mkdir /home/hoge \
-&&  mkdir /home/hoge/.config \
-&&  mkdir /home/hoge/.config/matplotlib \ 
-&&  echo 'backend : Qt4Agg' >> $HOME/.config/matplotlib/matplotlibrc
 
 RUN apt-get install -y sudo
 USER hoge
