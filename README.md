@@ -27,6 +27,8 @@ python3 jupyter-init-setting-python3.py
     - ブラウザを自動で開かなくする
     - ```/root/```をjupyter notebookのホームディレクトリとする
 
+### デフォルトユーザーについて
+hoge: sudoer
 
 
 ## 中身

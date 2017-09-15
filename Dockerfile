@@ -103,7 +103,7 @@ RUN curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add - \
 # tools env
 ## make sudo user
 RUN apt-get install -y sudo \
-&&  echo 'ssh_user ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers \
+&&  echo 'hoge ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers \
 &&  useradd -G sudo -p `perl -e "print(crypt('hoge', 'zZ'));"` hoge \
 &&  mkdir /home/hoge \
 &&  chown hoge:hoge /home/hoge
@@ -111,9 +111,9 @@ RUN apt-get install -y sudo \
 USER hoge
 WORKDIR /home/hoge
 
-## install fish shell and arounds
-### install powerline fonts
-RUN sudo apt-get -y install language-pack-ja-base language-pack-ja ibus-mozc \
+# install fish shell and arounds
+## install powerline fonts
+RUN sudo apt-get -y install language-pack-ja-base language-pack-ja  \
 &&  git clone https://github.com/powerline/fonts.git --depth=1 \
 &&  cd fonts  \
 &&  ./install.sh  \
@@ -123,32 +123,32 @@ RUN sudo apt-get -y install language-pack-ja-base language-pack-ja ibus-mozc \
 ENV LC_ALL='ja_JP.UTF-8'
 
 ### install fish
-RUN mkdir ~/.config/fish
-ADD config.fish ~/.config/fish/
-ADD fish_config.sh ~/
-RUN chmod +x fish_config.sh \
-&&  add-apt-repository ppa:fish-shell/release-2 \
-&&  apt-get update \
-&&  apt-get install -y fish \
+RUN mkdir ~/.config \
+&&  mkdir ~/.config/fish
+ADD config.fish /home/hoge/.config/fish/
+ADD fish_config.sh /home/hoge/
+RUN sudo chmod +x fish_config.sh \
+&&  sudo add-apt-repository ppa:fish-shell/release-2 \
+&&  sudo apt-get update \
+&&  sudo apt-get install -y fish \
 #### install fisherman
 &&  curl -Lo ~/.config/fish/functions/fisher.fish --create-dirs git.io/fisher \
-&&  chmod +x fish_config.sh \
+&&  sudo chmod +x fish_config.sh \
 &&  ./fish_config.sh \
 &&  rm fish_config.sh \
 #### install peco
 &&  wget -O - 'https://github.com/peco/peco/releases/download/v0.5.1/peco_linux_amd64.tar.gz' | tar zxvf - \
-&&  mv peco_linux_amd64/peco /usr/local/bin/ \
+&&  sudo mv peco_linux_amd64/peco /usr/local/bin/ \
 &&  rm -rf peco_linux_amd64 \
 
 # install editor
-&&  apt-get install -y vim \
+&&  sudo apt-get install -y vim \
 ## install rsub for sublime text via ssh
-&&  wget -O /usr/local/bin/rsub https://raw.github.com/aurora/rmate/master/rmate \
-&&  chmod +x /usr/local/bin/rsub \
+&&  sudo wget -O /usr/local/bin/rsub https://raw.github.com/aurora/rmate/master/rmate \
+&&  sudo chmod +x /usr/local/bin/rsub \
 ## set jupyter notebook
 &&  jupyter notebook --generate-config
-ADD jupyter-init-setting-python3.py ~/
+ADD jupyter-init-setting-python3.py /home/hoge/
 ## set matplotlib backend
-RUN mkdir ~/.config \
-&&  mkdir ~/.config/matplotlib \
+RUN mkdir ~/.config/matplotlib \
 &&  echo 'backend : Qt4Agg' >> $HOME/.config/matplotlib/matplotlibrc
