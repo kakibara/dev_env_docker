@@ -101,7 +101,6 @@ RUN echo 'backend : Qt4Agg' >> /root/.config/matplotlib/matplotlibrc
 ## install powershell
 
 RUN apt-get install -y sudo
-USER hoge
 WORKDIR /home/hoge
 RUN curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add - \
 &&  curl https://packages.microsoft.com/config/ubuntu/${UBUNTU_VERSION}/prod.list | tee /etc/apt/sources.list.d/microsoft.list \
