@@ -148,10 +148,11 @@ WORKDIR /root
 
 RUN useradd -G sudo -p `perl -e "print(crypt('hoge', 'zZ'));"` hoge
 # WORKDIR $HOME/.config/matplotlib
-RUN mkdir /home/hoge 
+RUN mkdir /home/hoge \
+&&  chown test:test /home/test
 USER hoge
-RUN mkdir /home/hoge/.config \
-&&  mkdir /home/hoge/.config/matplotlib \
+RUN mkdir ~/.config \
+&&  mkdir ~/.config/matplotlib \
 &&  echo 'backend : Qt4Agg' >> $HOME/.config/matplotlib/matplotlibrc
 # fish config
 WORKDIR /home/hoge
