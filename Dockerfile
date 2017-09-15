@@ -98,7 +98,7 @@ RUN apt-get install -y sudo \
 &&  echo 'ssh_user ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers \
 &&  useradd -G sudo -p `perl -e "print(crypt('hoge', 'zZ'));"` hoge \
 &&  mkdir /home/hoge \
-&&  chown test:test /home/test
+&&  chown hoge:hoge /home/hoge
 
 USER hoge
 WORKDIR /home/hoge
@@ -141,7 +141,6 @@ RUN add-apt-repository ppa:fish-shell/release-2 \
 &&  apt-get install -y vim \
 ## install rsub for sublime text via ssh
 &&  wget -O /usr/local/bin/rsub https://raw.github.com/aurora/rmate/master/rmate \
-<<<<<<< HEAD
 &&  chmod +x /usr/local/bin/rsub \
 ## set jupyter notebook
 &&  jupyter notebook --generate-config --allow-root
@@ -151,18 +150,12 @@ RUN mkdir ~/.config \
 &&  mkdir ~/.config/matplotlib \
 &&  echo 'backend : Qt4Agg' >> $HOME/.config/matplotlib/matplotlibrc
 #### install fisherman
-# RUN curl -Lo ~/.config/fish/functions/fisher.fish --create-dirs git.io/fisher \
-# &&  chmod +x fish_config.sh \
-# &&  ./fish_config.sh \
-# &&  rm fish_config.sh \
-=======
-&&  chmod +x /usr/local/bin/rsub
-WORKDIR /root
+RUN curl -Lo ~/.config/fish/functions/fisher.fish --create-dirs git.io/fisher \
+&&  chmod +x fish_config.sh \
+&&  ./fish_config.sh \
+&&  rm fish_config.sh 
 # USER hoge
 
-RUN useradd -G sudo -p `perl -e "print(crypt('hoge', 'zZ'));"` hoge
-# WORKDIR $HOME/.config/matplotlib
-WORKDIR /home/hoge 
 RUN mkdir .config \
 &&  mkdir .config/matplotlib \
 &&  echo 'backend : Qt4Agg' >> $HOME/.config/matplotlib/matplotlibrc
@@ -180,4 +173,3 @@ RUN curl -Lo ~/.config/fish/functions/fisher.fish --create-dirs git.io/fisher
 RUN ./fish_config.sh \
 &&  rm fish_config.sh \
 &&  jupyter notebook --generate-config
->>>>>>> b6fa45d40681d226c2cacf915e9e1ed340455126
