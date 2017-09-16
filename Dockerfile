@@ -6,6 +6,7 @@ ENV DEBIAN_FRONTEND noninteractive
 ENV CUDNN_VERSION 6.0.21
 ARG OPENCV_VERSION="3.3.0"
 ARG UBUNTU_VERSION="16.04"
+ARG PYTHON_VERSION="3.6"
 
 RUN echo "deb http://developer.download.nvidia.com/compute/machine-learning/repos/ubuntu1604/x86_64 /" > /etc/apt/sources.list.d/nvidia-ml.list
 
@@ -25,20 +26,24 @@ RUN apt-get install -y git apt-file pkg-config wget unzip \
                        apt-transport-https \
 &&  add-apt-repository ppa:fkrull/deadsnakes \
 ### python install
-&&  apt-get install -y python3.5-dev python-pip python3-pip \
+&&  apt-get install -y python${PYTHON_VERSION}-dev python-pip python3-pip \
                        python-numpy python3-numpy \
                        python-scipy python3-scipy \
+                       python-setuptools python3-setuptools \
                        python-matplotlib python3-matplotlib \
+                       libatlas-dev \
 &&  pip install --upgrade pip \
 &&  pip3 install --upgrade pip
 ### for build opencv 
 RUN apt-get install -y cmake build-essential libgtk2.0-dev\
                        libavcodec-dev libavformat-dev libswscale-dev \
                        libtbb2 libtbb-dev libjpeg-dev libpng-dev libtiff-dev \
-                       libjasper-dev libdc1394-22-dev libeigen3-dev libtbb-dev
+                       libjasper-dev libdc1394-22-dev libeigen3-dev libtbb-dev \
+                       libopenblas-dev liblapack-dev
 # cal env
 ## install opencv with CUDA
 WORKDIR /root
+
 RUN wget https://github.com/opencv/opencv/archive/${OPENCV_VERSION}.zip \
 &&  unzip ${OPENCV_VERSION}.zip \
 &&  rm ${OPENCV_VERSION}.zip \
@@ -67,22 +72,39 @@ RUN wget https://github.com/opencv/opencv/archive/${OPENCV_VERSION}.zip \
       -D PYTHON_EXECUTABLE=/usr/bin/python \
       -D PYTHON3_EXECUTABLE=/usr/bin/python3 \
       -D PYTHON_INCLUDE_DIR=/usr/include/python2.7 \
-      -D PYTHON3_INCLUDE_DIR=/usr/include/python3.5m \
+      -D PYTHON3_INCLUDE_DIR=/usr/include/python${PYTHON_VERSION}m \
       -D PYTHON_INCLUDE_DIR2=/usr/include/x86_64-linux-gnu/python2.7 \
-      -D PYTHON3_INCLUDE_DIR2=/usr/include/x86_64-linux-gnu/python3.5m \
+      -D PYTHON3_INCLUDE_DIR2=/usr/include/x86_64-linux-gnu/python${PYTHON_VERSION}m \
       -D PYTHON_LIBRARY=/usr/lib/x86_64-linux-gnu/libpython2.7 \
-      -D PYTHON3_LIBRARY=/usr/lib/x86_64-linux-gnu/libpython3.5m \
+      -D PYTHON3_LIBRARY=/usr/lib/x86_64-linux-gnu/libpython${PYTHON_VERSION}m \
       -D PYTHON_DEFAULT_EXECUTABLE=/usr/bin/python3 \
       -D PYTHON3_NUMPY_INCLUDE_DIRS=/usr/lib/python3/dist-packages/numpy/core/include \
       -D PYTHON3_PACKAGES_PATH=/usr/lib//python3/site-packages \
-      -D PY_PIP=/usr/local/lib/python3.5/dist-packages/pip \
+      -D PY_PIP=/usr/local/lib/python${PYTHON_VERSION}/dist-packages/pip \
       .. \
 &&  make -j$(nproc) \
 &&  make install \
-&&  cp lib/python3/cv2.* /usr/local/lib/python3.5/dist-packages/ \
+&&  cp lib/python3/cv2.* /usr/local/lib/python${PYTHON_VERSION}/dist-packages/ \
 &&  cd /root \
 &&  rm -rf opencv*
 ENV LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib
+
+## install boost
+RUN wget -O - 'https://dl.bintray.com/boostorg/release/1.65.1/source/boost_1_65_1.tar.gz' | tar zxvf - \
+&&  cd boost* \
+&&  ./bootstrap.sh --with-libraries=python --with-python=python3 \
+&&  ./b2 install -j$(nproc) \
+&&  cd .. \
+&&  rm -r boost*
+
+## install dlib
+ARG DLIB_VERSION="v19.6"
+RUN wget https://github.com/davisking/dlib/archive/${DLIB_VERSION}.zip \
+&&  unzip ${DLIB_VERSION}.zip \
+&&  cd dlib* \
+&&  python3 setup.py install \
+&&  cd .. \
+&&  rm -r dlib*
 
 ## tensorflow and jupyter notebook lab
 WORKDIR /root
@@ -90,15 +112,24 @@ RUN pip3 install tensorflow-gpu \
 &&  pip3 install jupyter \
 &&  pip install jupyterlab \
 &&  jupyter serverextension enable --py jupyterlab --sys-prefix \
-&&  python3 -m IPython kernelspec install-self 
+&&  python3 -m IPython kernelspec install-self \
+# skit learn
+&&  pip3 install scikit-learn
+# webcolors
+ARG WEBCOLORS_VERSION="master"
+RUN wget https://github.com/ubernostrum/webcolors/archive/${WEBCOLORS_VERSION}.zip \
+&&  unzip ${WEBCOLORS_VERSION}.zip \
+&&  cd webcolors* \
+&&  python3 setup.py install \
+&&  cd .. \
+&&  rm -rf webcolors* 
 
-
-## install powershell
-RUN curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add - \
-&&  curl https://packages.microsoft.com/config/ubuntu/${UBUNTU_VERSION}/prod.list | tee /etc/apt/sources.list.d/microsoft.list \
-&&  apt-get update \
-&&  apt-get install -y powershell \
-&&  powershell
+# ## install powershell
+# RUN curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add - \
+# &&  curl https://packages.microsoft.com/config/ubuntu/${UBUNTU_VERSION}/prod.list | tee /etc/apt/sources.list.d/microsoft.list \
+# &&  apt-get update \
+# &&  apt-get install -y powershell \
+# &&  powershell
 
 # tools env
 ## make sudo user
@@ -113,12 +144,13 @@ WORKDIR /home/hoge
 
 # install fish shell and arounds
 ## install powerline fonts
-RUN sudo apt-get -y install language-pack-ja-base language-pack-ja  \
-&&  git clone https://github.com/powerline/fonts.git --depth=1 \
-&&  cd fonts  \
+ARG POWERLINEFONT_VERSION="master"
+RUN wget https://github.com/powerline/fonts/archive/${POWERLINEFONT_VERSION}.zip \
+&&  unzip ${POWERLINEFONT_VERSION}.zip \
+&&  cd fonts*  \
 &&  ./install.sh  \
 &&  cd .. \
-&&  rm -rf fonts \
+&&  rm -rf fonts* \
 &&  fc-cache -vf ~/.local/share/fonts/
 ENV LC_ALL='ja_JP.UTF-8'
 
@@ -152,3 +184,5 @@ ADD jupyter-init-setting-python3.py /home/hoge/
 ## set matplotlib backend
 RUN mkdir ~/.config/matplotlib \
 &&  echo 'backend : Qt4Agg' >> $HOME/.config/matplotlib/matplotlibrc
+RUN sudo apt-get -y install language-pack-ja-base language-pack-ja 
+
