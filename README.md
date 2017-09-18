@@ -38,9 +38,13 @@ hoge: sudoer
 - 計算環境
     - opencv 3.3.0 (python3のみ)
     - python 3.5.2
+    - skitlearn
     - cuda 8.0
     - cudnn6
     - tensorflow 1.3
+    - dlib
+    - boost
+    - webcolors master
 - 開発ツール
     - fish shell
         - peco (Ctrl + r)

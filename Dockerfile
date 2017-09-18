@@ -6,7 +6,7 @@ ENV DEBIAN_FRONTEND noninteractive
 ENV CUDNN_VERSION 6.0.21
 ARG OPENCV_VERSION="3.3.0"
 ARG UBUNTU_VERSION="16.04"
-ARG PYTHON_VERSION="3.6"
+ARG PYTHON_VERSION="3.5"
 
 RUN echo "deb http://developer.download.nvidia.com/compute/machine-learning/repos/ubuntu1604/x86_64 /" > /etc/apt/sources.list.d/nvidia-ml.list
 
@@ -184,5 +184,5 @@ ADD jupyter-init-setting-python3.py /home/hoge/
 ## set matplotlib backend
 RUN mkdir ~/.config/matplotlib \
 &&  echo 'backend : Qt4Agg' >> $HOME/.config/matplotlib/matplotlibrc
-RUN sudo apt-get -y install language-pack-ja-base language-pack-ja 
+RUN sudo apt-get -y install language-pack-ja-base
 
