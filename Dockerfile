@@ -101,6 +101,7 @@ RUN wget -O - 'https://dl.bintray.com/boostorg/release/1.65.1/source/boost_1_65_
 ARG DLIB_VERSION="v19.6"
 RUN wget https://github.com/davisking/dlib/archive/${DLIB_VERSION}.zip \
 &&  unzip ${DLIB_VERSION}.zip \
+&&  rm ${DLIB_VERSION}.zip \
 &&  cd dlib* \
 &&  python3 setup.py install \
 &&  cd .. \
@@ -119,6 +120,7 @@ RUN pip3 install tensorflow-gpu \
 ARG WEBCOLORS_VERSION="master"
 RUN wget https://github.com/ubernostrum/webcolors/archive/${WEBCOLORS_VERSION}.zip \
 &&  unzip ${WEBCOLORS_VERSION}.zip \
+&&  rm ${WEBCOLORS_VERSION}.zip \
 &&  cd webcolors* \
 &&  python3 setup.py install \
 &&  cd .. \
@@ -147,6 +149,7 @@ WORKDIR /home/hoge
 ARG POWERLINEFONT_VERSION="master"
 RUN wget https://github.com/powerline/fonts/archive/${POWERLINEFONT_VERSION}.zip \
 &&  unzip ${POWERLINEFONT_VERSION}.zip \
+&&  rm ${POWERLINEFONT_VERSION}.zip \
 &&  cd fonts*  \
 &&  ./install.sh  \
 &&  cd .. \
