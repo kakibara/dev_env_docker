@@ -166,6 +166,7 @@ RUN sudo chmod +x fish_config.sh \
 &&  sudo add-apt-repository ppa:fish-shell/release-2 \
 &&  sudo apt-get update \
 &&  sudo apt-get install -y fish \
+&&  sudo apt-get -y install language-pack-ja-base \
 #### install fisherman
 &&  curl -Lo ~/.config/fish/functions/fisher.fish --create-dirs git.io/fisher \
 &&  sudo chmod +x fish_config.sh \
@@ -187,5 +188,4 @@ ADD jupyter-init-setting-python3.py /home/hoge/
 ## set matplotlib backend
 RUN mkdir ~/.config/matplotlib \
 &&  echo 'backend : Qt4Agg' >> $HOME/.config/matplotlib/matplotlibrc
-RUN sudo apt-get -y install language-pack-ja-base
 

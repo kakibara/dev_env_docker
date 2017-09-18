@@ -25,7 +25,7 @@ python3 jupyter-init-setting-python3.py
     - パスワードの設定
     - 全てのipからの接続を許可する
     - ブラウザを自動で開かなくする
-    - ```/root/```をjupyter notebookのホームディレクトリとする
+    - ```$HOME/```をjupyter notebookのホームディレクトリとする
 
 ### デフォルトユーザーについて
 hoge: sudoer
@@ -51,7 +51,7 @@ hoge: sudoer
         - ect..
     - powerlinefont
     - jupyter notebook / lab
-    - microsoft powershell
+   
 
 ## 注意
 ```python3```と書かなければpython3は起動しません。

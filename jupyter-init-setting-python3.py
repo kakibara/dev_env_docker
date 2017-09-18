@@ -19,7 +19,7 @@ configs = [
     "c.NotebookApp.notebook_dir = u'%s'" % (os.path.expanduser('~'))
 ]
 print(line)
-
+_ = [print(z) for z in configs]
 with open(jupyter_config, 'a') as file:
     file.write('\n')
     _ = [file.write(z +'\n') for z in configs]
