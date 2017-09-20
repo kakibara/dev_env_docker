@@ -77,7 +77,7 @@ RUN wget https://github.com/opencv/opencv/archive/${OPENCV_VERSION}.zip \
       -D PYTHON3_INCLUDE_DIR2=/usr/include/x86_64-linux-gnu/python${PYTHON_VERSION}m \
       -D PYTHON_LIBRARY=/usr/lib/x86_64-linux-gnu/libpython2.7 \
       -D PYTHON3_LIBRARY=/usr/lib/x86_64-linux-gnu/libpython${PYTHON_VERSION}m \
-      -D PYTHON_DEFAULT_EXECUTABLE=/usr/bin/python3 \
+      -D PYTHON_DEFAULT_EXECUTABLE=/usr/bin/python${PYTHON_VERSION} \
       -D PYTHON3_NUMPY_INCLUDE_DIRS=/usr/lib/python3/dist-packages/numpy/core/include \
       -D PYTHON3_PACKAGES_PATH=/usr/lib//python3/site-packages \
       -D PY_PIP=/usr/local/lib/python${PYTHON_VERSION}/dist-packages/pip \
@@ -176,9 +176,11 @@ RUN sudo chmod +x fish_config.sh \
 &&  wget -O - 'https://github.com/peco/peco/releases/download/v0.5.1/peco_linux_amd64.tar.gz' | tar zxvf - \
 &&  sudo mv peco_linux_amd64/peco /usr/local/bin/ \
 &&  rm -rf peco_linux_amd64 \
+#### set fish shell as a default
+&&  sudo chsh -s /usr/bin/fish
 
 # install editor
-&&  sudo apt-get install -y vim \
+RUN sudo apt-get install -y vim \
 ## install rsub for sublime text via ssh
 &&  sudo wget -O /usr/local/bin/rsub https://raw.github.com/aurora/rmate/master/rmate \
 &&  sudo chmod +x /usr/local/bin/rsub \
@@ -188,4 +190,3 @@ ADD jupyter-init-setting-python3.py /home/hoge/
 ## set matplotlib backend
 RUN mkdir ~/.config/matplotlib \
 &&  echo 'backend : Qt4Agg' >> $HOME/.config/matplotlib/matplotlibrc
-
