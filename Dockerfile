@@ -177,7 +177,8 @@ RUN sudo chmod +x fish_config.sh \
 &&  sudo mv peco_linux_amd64/peco /usr/local/bin/ \
 &&  rm -rf peco_linux_amd64 \
 #### set fish shell as a default
-&&  sudo chsh -s /usr/bin/fish
+&&  sudo chsh -s /usr/bin/fish \
+&&  sudo chsh -s /usr/bin/fish hoge
 
 # install editor
 RUN sudo apt-get install -y vim \
