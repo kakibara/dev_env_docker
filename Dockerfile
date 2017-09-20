@@ -191,3 +191,6 @@ ADD jupyter-init-setting-python3.py /home/hoge/
 ## set matplotlib backend
 RUN mkdir ~/.config/matplotlib \
 &&  echo 'backend : Qt4Agg' >> $HOME/.config/matplotlib/matplotlibrc
+
+# install ssh
+RUN sudo apt-get -y install openssh-server
