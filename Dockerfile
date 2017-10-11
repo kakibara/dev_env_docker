@@ -132,7 +132,7 @@ RUN wget https://github.com/ubernostrum/webcolors/archive/${WEBCOLORS_VERSION}.z
 # tools env
 ## make sudo user
 # crypt(passwd, salt)
-ARG USER_NAME='sakaki'
+ARG USER_NAME='hoge'
 ARG UID='190025'
 RUN apt-get install -y sudo \
 &&  echo ${USER_NAME}' ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers \
@@ -159,8 +159,8 @@ ENV LC_CTYPE='ja_JP.UTF-8'
 ### install fish
 RUN mkdir ~/.config \
 &&  mkdir ~/.config/fish
-ADD config.fish /home/hoge/.config/fish/
-ADD fish_config.sh /home/hoge/
+ADD config.fish /home/${USER_NAME}/.config/fish/
+ADD fish_config.sh /home/${USER_NAME}/
 RUN sudo chmod +x fish_config.sh \
 &&  sudo add-apt-repository ppa:fish-shell/release-2 \
 &&  sudo apt-get update \
@@ -177,7 +177,7 @@ RUN sudo chmod +x fish_config.sh \
 &&  rm -rf peco_linux_amd64 \
 #### set fish shell as a default
 &&  sudo chsh -s /usr/bin/fish \
-&&  sudo chsh -s /usr/bin/fish hoge
+&&  sudo chsh -s /usr/bin/fish ${USER_NAME}
 
 # install editor
 RUN sudo apt-get install -y vim \
@@ -186,7 +186,7 @@ RUN sudo apt-get install -y vim \
 &&  sudo chmod +x /usr/local/bin/rsub \
 ## set jupyter notebook
 &&  jupyter notebook --generate-config
-ADD jupyter-init-setting-python3.py /home/hoge/
+ADD jupyter-init-setting-python3.py /home/${USER_NAME}/
 ## set matplotlib backend
 RUN mkdir ~/.config/matplotlib \
 &&  echo 'backend : Qt4Agg' >> $HOME/.config/matplotlib/matplotlibrc
