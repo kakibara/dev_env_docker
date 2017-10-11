@@ -128,24 +128,20 @@ RUN wget https://github.com/ubernostrum/webcolors/archive/${WEBCOLORS_VERSION}.z
 &&  cd .. \
 &&  rm -rf webcolors* 
 
-# ## install powershell
-# RUN curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add - \
-# &&  curl https://packages.microsoft.com/config/ubuntu/${UBUNTU_VERSION}/prod.list | tee /etc/apt/sources.list.d/microsoft.list \
-# &&  apt-get update \
-# &&  apt-get install -y powershell \
-# &&  powershell
 
 # tools env
 ## make sudo user
+# crypt(passwd, salt)
+ARG USER_NAME='sakaki'
 ARG UID='190025'
 RUN apt-get install -y sudo \
-&&  echo 'hoge ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers \
-&&  useradd -u ${UID} -G sudo -p `perl -e "print(crypt('hoge', 'zZ'));"` hoge \
-&&  mkdir /home/hoge \
-&&  chown hoge:hoge /home/hoge
+&&  echo ${USER_NAME}' ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers \
+&&  useradd -u ${UID} -G sudo -p `perl -e "print(crypt('pass', 'wN'));"` ${USER_NAME} \
+&&  mkdir /home/${USER_NAME} \
+&&  chown ${USER_NAME}:${USER_NAME} /home/${USER_NAME}
 
-USER hoge
-WORKDIR /home/hoge
+USER ${USER_NAME}
+WORKDIR /home/${USER_NAME}
 
 # install fish shell and arounds
 ## install powerline fonts
