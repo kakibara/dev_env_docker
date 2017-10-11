@@ -18,7 +18,7 @@ RUN apt-get update && apt-get -y upgrade \
             libcudnn6-dev=$CUDNN_VERSION-1+cuda8.0
 # &&  rm -rf /var/lib/apt/lists/*
 ### package needed
-RUN apt-get install -y git apt-file pkg-config wget unzip \
+RUN apt-get install -y git apt-file pkg-config wget unzip aria2 \
 &&  apt-file update \
 &&  apt-file search add-apt-repository \
 &&  apt-get install -y software-properties-common \
@@ -115,7 +115,9 @@ RUN pip3 install tensorflow-gpu \
 &&  jupyter serverextension enable --py jupyterlab --sys-prefix \
 &&  python3 -m IPython kernelspec install-self \
 # skit learn
-&&  pip3 install scikit-learn
+&&  pip3 install scikit-learn \
+                 pandas \
+                 xlrd 
 # webcolors
 ARG WEBCOLORS_VERSION="master"
 RUN wget https://github.com/ubernostrum/webcolors/archive/${WEBCOLORS_VERSION}.zip \
@@ -135,9 +137,10 @@ RUN wget https://github.com/ubernostrum/webcolors/archive/${WEBCOLORS_VERSION}.z
 
 # tools env
 ## make sudo user
+ARG UID='190025'
 RUN apt-get install -y sudo \
 &&  echo 'hoge ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers \
-&&  useradd -G sudo -p `perl -e "print(crypt('hoge', 'zZ'));"` hoge \
+&&  useradd -u ${UID} -G sudo -p `perl -e "print(crypt('hoge', 'zZ'));"` hoge \
 &&  mkdir /home/hoge \
 &&  chown hoge:hoge /home/hoge
 
@@ -155,7 +158,7 @@ RUN wget https://github.com/powerline/fonts/archive/${POWERLINEFONT_VERSION}.zip
 &&  cd .. \
 &&  rm -rf fonts* \
 &&  fc-cache -vf ~/.local/share/fonts/
-ENV LC_ALL='ja_JP.UTF-8'
+ENV LC_CTYPE='ja_JP.UTF-8'
 
 ### install fish
 RUN mkdir ~/.config \
@@ -193,4 +196,4 @@ RUN mkdir ~/.config/matplotlib \
 &&  echo 'backend : Qt4Agg' >> $HOME/.config/matplotlib/matplotlibrc
 
 # install ssh
-RUN sudo apt-get -y install openssh-server
+RUN sudo apt-get -y install tmux
