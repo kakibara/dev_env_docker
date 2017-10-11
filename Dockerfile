@@ -134,9 +134,10 @@ RUN wget https://github.com/ubernostrum/webcolors/archive/${WEBCOLORS_VERSION}.z
 # crypt(passwd, salt)
 ARG USER_NAME='hoge'
 ARG UID='190025'
+ARG PASSWD='password'
 RUN apt-get install -y sudo \
 &&  echo ${USER_NAME}' ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers \
-&&  useradd -u ${UID} -G sudo -p `perl -e "print(crypt('pass', 'wN'));"` ${USER_NAME} \
+&&  useradd -u ${UID} -G sudo -p `perl -e "print(crypt('${PASSWD}', 'wN'));"` ${USER_NAME} \
 &&  mkdir /home/${USER_NAME} \
 &&  chown ${USER_NAME}:${USER_NAME} /home/${USER_NAME}
 
