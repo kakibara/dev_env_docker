@@ -133,7 +133,7 @@ RUN wget https://github.com/ubernostrum/webcolors/archive/${WEBCOLORS_VERSION}.z
 ## make sudo user
 # crypt(passwd, salt)
 ARG USER_NAME='hoge'
-ARG UID='190025'
+ARG UID='1000'
 ARG PASSWD='password'
 RUN apt-get install -y sudo \
 &&  echo ${USER_NAME}' ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers \

@@ -2,19 +2,37 @@
 # 画像処理のためのDockerfile
 ## 概要
 画像処理のためのツールを詰めたDockerfile
-GPUを使うことを前提としている
+GPUを使うことを前提としている。
+you csn pull image or build by yourself.
 ## 使い方
-### イメージのプル
+### pull image
+builded image is in the dockerhub
 イメージは[dockerhub](https://hub.docker.com/r/sakakib/)に登録している。
 
 ```
-docker pull sakakib/opencv
+docker pull sakakib/opencv:latest
 ```
-### コンテナの作成
+### how to build
+if you want to build by yourself, you can build following simply.
+```bash
+docker build -t image_name .
+```
+Initial user is hoge. hoge is a sudoer and its UID is 1000. I set NO PASSWORD for sudoer by writing `ALL=(ALL) NOPASSWD:ALL` in `/etc/sudoers`.
+
+This Dockerfile make an user in image. You can change user name, UID and password from default with `--build-arg` flag. Make sure that changing user password makes no sence because all sudoers do not require password. 
+```bash
+docker build -t image_name --build-arg USER_NAME='your name' --build-arg UID='your UID' .
+```
+### cerate container
+you can create container as following.
+```
+nvidia-docker run --rm -it -p 8888:8888 sakakib/opencv /bin/bash
+```
+this image have fish shell.
 ```
 nvidia-docker run --rm -it -p 8888:8888 sakakib/opencv /usr/bin/fish
 ```
-コンテナ内での初期設定を実行する。
+if you want to configure upyter notebook, run following script.
 ```
 python3 jupyter-init-setting-python3.py
 ```
