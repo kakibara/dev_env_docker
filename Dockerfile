@@ -18,15 +18,14 @@ RUN apt-get update && apt-get -y upgrade \
             libcudnn6-dev=$CUDNN_VERSION-1+cuda8.0
 # &&  rm -rf /var/lib/apt/lists/*
 ### package needed
-RUN apt-get install -y git apt-file pkg-config wget unzip aria2 \
+RUN apt-get update && apt-get install -y git apt-file pkg-config wget unzip aria2 \
 &&  apt-file update \
 &&  apt-file search add-apt-repository \
 &&  apt-get install -y software-properties-common \
                        python-software-properties \
                        apt-transport-https \
-&&  add-apt-repository ppa:fkrull/deadsnakes \
 ### python install
-&&  apt-get install -y python${PYTHON_VERSION}-dev python-pip python3-pip \
+&&  apt-get install -y python-pip python3-pip \
                        python-numpy python3-numpy \
                        python-scipy python3-scipy \
                        python-setuptools python3-setuptools \
@@ -35,7 +34,8 @@ RUN apt-get install -y git apt-file pkg-config wget unzip aria2 \
 &&  pip install --upgrade pip \
 &&  pip3 install --upgrade pip
 ### for build opencv 
-RUN apt-get install -y cmake build-essential libgtk2.0-dev\
+RUN apt-get update \
+&&  apt-get install -y cmake build-essential libgtk2.0-dev\
                        libavcodec-dev libavformat-dev libswscale-dev \
                        libtbb2 libtbb-dev libjpeg-dev libpng-dev libtiff-dev \
                        libjasper-dev libdc1394-22-dev libeigen3-dev libtbb-dev \
@@ -117,7 +117,18 @@ RUN pip3 install tensorflow-gpu \
 # skit learn
 &&  pip3 install scikit-learn \
                  pandas \
-                 xlrd 
+                 xlrd\
+                 pypdf2
+
+## pydicom
+RUN wget https://github.com/darcymason/pydicom/archive/master.zip \
+&&  unzip *.zip \
+&&  cd pydicom-master \
+&&  python3 setup.py install\
+&&  cd .. \
+&&  rm -rf pydicom-master \
+&&  rm *.zip
+ 
 # webcolors
 ARG WEBCOLORS_VERSION="master"
 RUN wget https://github.com/ubernostrum/webcolors/archive/${WEBCOLORS_VERSION}.zip \
@@ -135,7 +146,8 @@ RUN wget https://github.com/ubernostrum/webcolors/archive/${WEBCOLORS_VERSION}.z
 ARG USER_NAME='hoge'
 ARG UID='190025'
 ARG PASSWD='password'
-RUN apt-get install -y sudo \
+RUN apt-get update \
+&&  apt-get install -y sudo \
 &&  echo ${USER_NAME}' ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers \
 &&  useradd -u ${UID} -G sudo -p `perl -e "print(crypt('${PASSWD}', 'wN'));"` ${USER_NAME} \
 &&  mkdir /home/${USER_NAME} \
@@ -181,7 +193,8 @@ RUN sudo chmod +x fish_config.sh \
 &&  sudo chsh -s /usr/bin/fish ${USER_NAME}
 
 # install editor
-RUN sudo apt-get install -y vim \
+RUN sudo apt-get update \
+&&  sudo apt-get install -y vim \
 ## install rsub for sublime text via ssh
 &&  sudo wget -O /usr/local/bin/rsub https://raw.github.com/aurora/rmate/master/rmate \
 &&  sudo chmod +x /usr/local/bin/rsub \
@@ -193,4 +206,6 @@ RUN mkdir ~/.config/matplotlib \
 &&  echo 'backend : Qt4Agg' >> $HOME/.config/matplotlib/matplotlibrc
 
 # install ssh
-RUN sudo apt-get -y install tmux
+# RUN sudo apt-get -y install tmux
+RUN sudo pip3 install PyWavelets
+WORKDIR /workspace
