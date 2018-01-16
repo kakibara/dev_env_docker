@@ -209,3 +209,4 @@ RUN mkdir ~/.config/matplotlib \
 # RUN sudo apt-get -y install tmux
 RUN sudo pip3 install PyWavelets
 WORKDIR /workspace
+RUN sudo chown $USER_NAME:$USER_NAME /workspace
