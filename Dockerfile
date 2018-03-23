@@ -34,79 +34,79 @@ RUN apt-get update && apt-get install -y git apt-file pkg-config wget unzip aria
                        libatlas-dev \
 &&  pip install --upgrade pip \
 &&  pip3 install --upgrade pip
-### for build opencv 
-RUN apt-get update \
-&&  apt-get install -y cmake build-essential libgtk2.0-dev\
-                       libavcodec-dev libavformat-dev libswscale-dev \
-                       libtbb2 libtbb-dev libjpeg-dev libpng-dev libtiff-dev \
-                       libjasper-dev libdc1394-22-dev libeigen3-dev libtbb-dev \
-                       libopenblas-dev liblapack-dev
-# cal env
-## install opencv with CUDA
-WORKDIR /root
-
-RUN wget https://github.com/opencv/opencv/archive/${OPENCV_VERSION}.zip \
-&&  unzip ${OPENCV_VERSION}.zip \
-&&  rm ${OPENCV_VERSION}.zip \
-&&  wget https://github.com/opencv/opencv_contrib/archive/${OPENCV_VERSION}.zip \
-&&  unzip ${OPENCV_VERSION}.zip \
-&&  rm ${OPENCV_VERSION}.zip \
-&&  mkdir opencv-${OPENCV_VERSION}/cmake_binary \
-&&  cd opencv-${OPENCV_VERSION}/cmake_binary \
-&&  cmake -D CMAKE_BUILD_TYPE=RELEASE \
-      -D CMAKE_INSTALL_PREFIX=/usr/local \
-      -D BUILD_opencv_python2=ON \
-      -D BUILD_NEW_PYTHON_SUPPORT=ON \
-      -D BUILD_opencv_python3=ON \
-      -D WITH_CUDA=ON \
-      -D WITH_TBB=ON \
-      -D ENABLE_FAST_MATH=1 \
-      -D WITH_NVCUVID=ON \
-      -D CUDA_FAST_MATH=1 \
-      -D WITH_CUBLAS=1 \
-      -D INSTALL_PYTHON_EXAMPLES=ON \
-      -D OPENCV_EXTRA_MODULES_PATH=../../opencv_contrib-${OPENCV_VERSION}/modules \
-      -D BUILD_EXAMPLES=ON \
-      -D CUDA_CUDA_LIBRARY=/usr/local/cuda/lib64/stubs/libcuda.so \
-      -D WITH_FFMPEG=ON \
-      -D HAVE_opencv_python3=ON \
-      -D PYTHON_EXECUTABLE=/usr/bin/python \
-      -D PYTHON3_EXECUTABLE=/usr/bin/python3 \
-      -D PYTHON_INCLUDE_DIR=/usr/include/python2.7 \
-      -D PYTHON3_INCLUDE_DIR=/usr/include/python${PYTHON_VERSION}m \
-      -D PYTHON_INCLUDE_DIR2=/usr/include/x86_64-linux-gnu/python2.7 \
-      -D PYTHON3_INCLUDE_DIR2=/usr/include/x86_64-linux-gnu/python${PYTHON_VERSION}m \
-      -D PYTHON_LIBRARY=/usr/lib/x86_64-linux-gnu/libpython2.7 \
-      -D PYTHON3_LIBRARY=/usr/lib/x86_64-linux-gnu/libpython${PYTHON_VERSION}m \
-      -D PYTHON_DEFAULT_EXECUTABLE=/usr/bin/python${PYTHON_VERSION} \
-      -D PYTHON3_NUMPY_INCLUDE_DIRS=/usr/lib/python3/dist-packages/numpy/core/include \
-      -D PYTHON3_PACKAGES_PATH=/usr/lib//python3/site-packages \
-      -D PY_PIP=/usr/local/lib/python${PYTHON_VERSION}/dist-packages/pip \
-      .. \
-&&  make -j$(nproc) \
-&&  make install \
-&&  cp lib/python3/cv2.* /usr/local/lib/python${PYTHON_VERSION}/dist-packages/ \
-&&  cd /root \
-&&  rm -rf opencv*
-ENV LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib
-
-## install boost
-RUN wget -O - 'https://dl.bintray.com/boostorg/release/1.65.1/source/boost_1_65_1.tar.gz' | tar zxvf - \
-&&  cd boost* \
-&&  ./bootstrap.sh --with-libraries=python --with-python=python3 \
-&&  ./b2 install -j$(nproc) \
-&&  cd .. \
-&&  rm -r boost*
-
-## install dlib
-ARG DLIB_VERSION="v19.6"
-RUN wget https://github.com/davisking/dlib/archive/${DLIB_VERSION}.zip \
-&&  unzip ${DLIB_VERSION}.zip \
-&&  rm ${DLIB_VERSION}.zip \
-&&  cd dlib* \
-&&  python3 setup.py install \
-&&  cd .. \
-&&  rm -r dlib*
+# ### for build opencv 
+# RUN apt-get update \
+# &&  apt-get install -y cmake build-essential libgtk2.0-dev\
+#                        libavcodec-dev libavformat-dev libswscale-dev \
+#                        libtbb2 libtbb-dev libjpeg-dev libpng-dev libtiff-dev \
+#                        libjasper-dev libdc1394-22-dev libeigen3-dev libtbb-dev \
+#                        libopenblas-dev liblapack-dev
+# # cal env
+# ## install opencv with CUDA
+# WORKDIR /root
+# 
+# RUN wget https://github.com/opencv/opencv/archive/${OPENCV_VERSION}.zip \
+# &&  unzip ${OPENCV_VERSION}.zip \
+# &&  rm ${OPENCV_VERSION}.zip \
+# &&  wget https://github.com/opencv/opencv_contrib/archive/${OPENCV_VERSION}.zip \
+# &&  unzip ${OPENCV_VERSION}.zip \
+# &&  rm ${OPENCV_VERSION}.zip \
+# &&  mkdir opencv-${OPENCV_VERSION}/cmake_binary \
+# &&  cd opencv-${OPENCV_VERSION}/cmake_binary \
+# &&  cmake -D CMAKE_BUILD_TYPE=RELEASE \
+#       -D CMAKE_INSTALL_PREFIX=/usr/local \
+#       -D BUILD_opencv_python2=ON \
+#       -D BUILD_NEW_PYTHON_SUPPORT=ON \
+#       -D BUILD_opencv_python3=ON \
+#       -D WITH_CUDA=ON \
+#       -D WITH_TBB=ON \
+#       -D ENABLE_FAST_MATH=1 \
+#       -D WITH_NVCUVID=ON \
+#       -D CUDA_FAST_MATH=1 \
+#       -D WITH_CUBLAS=1 \
+#       -D INSTALL_PYTHON_EXAMPLES=ON \
+#       -D OPENCV_EXTRA_MODULES_PATH=../../opencv_contrib-${OPENCV_VERSION}/modules \
+#       -D BUILD_EXAMPLES=ON \
+#       -D CUDA_CUDA_LIBRARY=/usr/local/cuda/lib64/stubs/libcuda.so \
+#       -D WITH_FFMPEG=ON \
+#       -D HAVE_opencv_python3=ON \
+#       -D PYTHON_EXECUTABLE=/usr/bin/python \
+#       -D PYTHON3_EXECUTABLE=/usr/bin/python3 \
+#       -D PYTHON_INCLUDE_DIR=/usr/include/python2.7 \
+#       -D PYTHON3_INCLUDE_DIR=/usr/include/python${PYTHON_VERSION}m \
+#       -D PYTHON_INCLUDE_DIR2=/usr/include/x86_64-linux-gnu/python2.7 \
+#       -D PYTHON3_INCLUDE_DIR2=/usr/include/x86_64-linux-gnu/python${PYTHON_VERSION}m \
+#       -D PYTHON_LIBRARY=/usr/lib/x86_64-linux-gnu/libpython2.7 \
+#       -D PYTHON3_LIBRARY=/usr/lib/x86_64-linux-gnu/libpython${PYTHON_VERSION}m \
+#       -D PYTHON_DEFAULT_EXECUTABLE=/usr/bin/python${PYTHON_VERSION} \
+#       -D PYTHON3_NUMPY_INCLUDE_DIRS=/usr/lib/python3/dist-packages/numpy/core/include \
+#       -D PYTHON3_PACKAGES_PATH=/usr/lib//python3/site-packages \
+#       -D PY_PIP=/usr/local/lib/python${PYTHON_VERSION}/dist-packages/pip \
+#       .. \
+# &&  make -j$(nproc) \
+# &&  make install \
+# &&  cp lib/python3/cv2.* /usr/local/lib/python${PYTHON_VERSION}/dist-packages/ \
+# &&  cd /root \
+# &&  rm -rf opencv*
+# ENV LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib
+# 
+# ## install boost
+# RUN wget -O - 'https://dl.bintray.com/boostorg/release/1.65.1/source/boost_1_65_1.tar.gz' | tar zxvf - \
+# &&  cd boost* \
+# &&  ./bootstrap.sh --with-libraries=python --with-python=python3 \
+# &&  ./b2 install -j$(nproc) \
+# &&  cd .. \
+# &&  rm -r boost*
+# 
+# ## install dlib
+# ARG DLIB_VERSION="v19.6"
+# RUN wget https://github.com/davisking/dlib/archive/${DLIB_VERSION}.zip \
+# &&  unzip ${DLIB_VERSION}.zip \
+# &&  rm ${DLIB_VERSION}.zip \
+# &&  cd dlib* \
+# &&  python3 setup.py install \
+# &&  cd .. \
+# &&  rm -r dlib*
 
 ## tensorflow and jupyter notebook lab
 WORKDIR /root
