@@ -21,7 +21,7 @@ Initial user is hoge. hoge is a sudoer and its UID is 1000. I set NO PASSWORD fo
 
 This Dockerfile make an user in image. You can change user name, UID and password from default with `--build-arg` flag. Make sure that changing user password makes no sence because all sudoers do not require password. 
 ```bash
-docker build -t image_name -f Dockerfile_gpu--build-arg USER_NAME='your name' --build-arg UID='your UID' .
+docker build -t image_name -f Dockerfile_gpu --build-arg USER_NAME='your name' --build-arg UID='your UID' .
 ```
 ### cerate container
 you can create container as following.
