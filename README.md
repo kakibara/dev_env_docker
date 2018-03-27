@@ -1,5 +1,5 @@
 
-# Dockimage for machine learing
+# Docker for machine learing
 ## overview
 Thete are GPU vesion and CPU version.
 You can pull image or build by yourself.
