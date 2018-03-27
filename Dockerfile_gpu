@@ -111,16 +111,7 @@ RUN pip3 install tensorflow-gpu \
                  h5py \
                  keras \
                  PyWavelets \
-                 pydicom \
-
-## set jupyter notebook
-&&  jupyter notebook --generate-config
-ADD jupyter-init-setting-python3.py /workspace/
-ADD run_jupyter.sh /workspace/
-RUN chmod +x /workspace/run_jupyter.sh
-# ## set matplotlib backend
-# RUN mkdir ~/.config/matplotlib \
-# &&  echo 'backend : Qt4Agg' >> $HOME/.config/matplotlib/matplotlibrc
+                 pydicom
 
 # webcolors
 ARG WEBCOLORS_VERSION="master"
@@ -191,6 +182,15 @@ RUN sudo apt-get update \
 ## install rsub for sublime text via ssh
 &&  sudo wget -O /usr/local/bin/rsub https://raw.github.com/aurora/rmate/master/rmate \
 &&  sudo chmod +x /usr/local/bin/rsub 
+
+## set jupyter notebook
+&&  jupyter notebook --generate-config
+ADD jupyter-init-setting-python3.py /workspace/
+ADD run_jupyter.sh /workspace/
+RUN chmod +x /workspace/run_jupyter.sh
+## set matplotlib backend
+RUN mkdir ~/.config/matplotlib \
+&&  echo 'backend : Qt4Agg' >> $HOME/.config/matplotlib/matplotlibrc
 
 # install ssh
 WORKDIR /workspace
