@@ -1,13 +1,12 @@
 
-# ¿¿¿¿¿¿¿¿Dockerfile
-## ¿¿
-¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿Dockerfile¿¿¿
-GPU vesion¿CPU version¿¿¿¿¿¿¿¿¿
-you csn pull image or build by yourself.
-## ¿¿¿
+# Dockimage for machine learing
+## overview
+Thete are GPU vesion and CPU version.
+You can pull image or build by yourself.
+## hou to use
 ### pull image
 builded image is in the dockerhub
-¿¿¿¿¿[dockerhub](https://hub.docker.com/r/sakakib/)¿¿¿¿¿¿¿¿
+[dockerhub](https://hub.docker.com/r/sakakib/)
 
 ```bash
 docker pull sakakib/opencv:latest.cpu
@@ -28,40 +27,40 @@ This Dockerfile make an user in image. You can change user name, UID and passwor
 docker build -t image_name -f Dockerfile_gpu --build-arg USER_NAME='your name' --build-arg UID='your UID' .
 ```
 ### cerate container
-you can create container as following.
+You can use bash or fish shell.
+When you want to set up jupyter notebook configure, please use this script.
+- bash
 ```bash
-nvidia-docker run --rm -it -p 8888:8888 sakakib/opencv /bin/bash
+nvidia-docker run --rm -it -p 8888:8888 sakakib/opencv bash
 ```
-this image have fish shell.
+- fish shell.
 ```bash
-nvidia-docker run --rm -it -p 8888:8888 sakakib/opencv /usr/bin/fish
+nvidia-docker run --rm -it -p 8888:8888 sakakib/opencv fish
 ```
-If you want to run jupyter notebook immediately, run following command.
+- jupyter script
 ```bash
 nvidia-docker run --rm -it -p 8888:8888 sakakib/opencv:latest.gpu ./run_jupyter.sh
 ```
-When you want to set up jupyter notebook configure, please use this script.
+- jupyter setting script
 ```bash
 python3 jupyter-init-setting-python3.py
 ```
 
-- ```-p 8888:8888```¿jupuyter notebook¿
-- ```-p 52698:52698```¿rsub(for sublime text)¿¿¿¿¿¿¿¿¿
-- ```jupyter-init-setting-python3.py```¿jupyter notebook¿¿¿¿¿¿¿¿¿¿¿¿
-    - ¿¿¿¿¿¿¿¿
-    - ¿¿¿ip¿¿¿¿¿¿¿¿¿¿
-    - ¿¿¿¿¿¿¿¿¿¿¿¿¿¿
-    - ```/workspace/```¿jupyter notebook¿¿¿¿¿¿¿¿¿¿¿¿¿
+- ```-p 8888:8888``` jupuyter notebook
+- ```-p 52698:52698``` rsub(for sublime text)
+- ```jupyter-init-setting-python3.py``` make following settings
+    - set password of jupyter notebook
+    - set jupyter notebook's home directory as /workspace
+    - allow access from all ip
 
-### ¿¿¿¿¿¿¿¿¿¿¿¿¿
-hoge: sudoer
+default user is hoge(sudoer)
 
 
-## ¿¿
+## packages
 
-- ¿¿¿
+- base
     - ubuntu16.04
-- ¿¿¿¿
+- packages
     - opencv 3.4.1 (python3¿¿)
     - python 3.5.2
     - skitlearn
@@ -71,7 +70,7 @@ hoge: sudoer
     - dlib
     - boost
     - webcolors master
-- ¿¿¿¿¿
+- shell
     - fish shell
         - peco (Ctrl + r)
         - ect..
@@ -79,6 +78,3 @@ hoge: sudoer
     - jupyter notebook / lab
    
 
-## ¿¿
-```python3```¿¿¿¿¿¿¿python3¿¿¿¿¿¿¿¿
-¿¿¿¿¿¿¿¿python¿¿¿¿¿¿¿¿¿¿
