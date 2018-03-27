@@ -1,16 +1,20 @@
 
-# ç”»åƒå‡¦ç†ã®ãŸã‚ã®Dockerfile
-## æ¦‚è¦
-ç”»åƒå‡¦ç†ã®ãŸã‚ã®ãƒ„ãƒ¼ãƒ«ã‚’è©°ã‚ãŸDockerfile
-GPUã‚’ä½¿ã†ã“ã¨ã‚’å‰æã¨ã—ã¦ã„ã‚‹ã€‚
+# ¿¿¿¿¿¿¿¿Dockerfile
+## ¿¿
+¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿Dockerfile¿¿¿
+GPU vesion¿CPU version¿¿¿¿¿¿¿¿¿
 you csn pull image or build by yourself.
-## ä½¿ã„æ–¹
+## ¿¿¿
 ### pull image
 builded image is in the dockerhub
-ã‚¤ãƒ¡ãƒ¼ã‚¸ã¯[dockerhub](https://hub.docker.com/r/sakakib/)ã«ç™»éŒ²ã—ã¦ã„ã‚‹ã€‚
+¿¿¿¿¿[dockerhub](https://hub.docker.com/r/sakakib/)¿¿¿¿¿¿¿¿
 
+```bash
+docker pull sakakib/opencv:latest.cpu
 ```
-docker pull sakakib/opencv:latest
+or
+```bash
+docker pull sakakib/opencv:latest.gpu
 ```
 ### how to build
 if you want to build by yourself, you can build following simply.
@@ -25,45 +29,49 @@ docker build -t image_name -f Dockerfile_gpu --build-arg USER_NAME='your name' -
 ```
 ### cerate container
 you can create container as following.
-```
+```bash
 nvidia-docker run --rm -it -p 8888:8888 sakakib/opencv /bin/bash
 ```
 this image have fish shell.
-```
+```bash
 nvidia-docker run --rm -it -p 8888:8888 sakakib/opencv /usr/bin/fish
 ```
-if you want to configure upyter notebook, run following script.
+If you want to run jupyter notebook immediately, run following command.
+```bash
+nvidia-docker run --rm -it -p 8888:8888 sakakib/opencv:latest.gpu ./run_jupyter.sh
 ```
+When you want to set up jupyter notebook configure, please use this script.
+```bash
 python3 jupyter-init-setting-python3.py
 ```
 
-- ```-p 8888:8888```ã¯jupuyter notebookç”¨
-- ```-p 52698:52698```ã§rsub(for sublime text)ã‚’ä½¿ç”¨å¯èƒ½ã«ã™ã‚‹ã€‚
-- ```jupyter-init-setting-python3.py```ã¯jupyter notebookã«ä»¥ä¸‹ã®è¨­å®šã‚’è¡Œã„ã¾ã™ã€‚
-    - ãƒ‘ã‚¹ãƒ¯ãƒ¼ãƒ‰ã®è¨­å®š
-    - å…¨ã¦ã®ipã‹ã‚‰ã®æ¥ç¶šã‚’è¨±å¯ã™ã‚‹
-    - ãƒ–ãƒ©ã‚¦ã‚¶ã‚’è‡ªå‹•ã§é–‹ã‹ãªãã™ã‚‹
-    - ```$HOME/```ã‚’jupyter notebookã®ãƒ›ãƒ¼ãƒ ãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒªã¨ã™ã‚‹
+- ```-p 8888:8888```¿jupuyter notebook¿
+- ```-p 52698:52698```¿rsub(for sublime text)¿¿¿¿¿¿¿¿¿
+- ```jupyter-init-setting-python3.py```¿jupyter notebook¿¿¿¿¿¿¿¿¿¿¿¿
+    - ¿¿¿¿¿¿¿¿
+    - ¿¿¿ip¿¿¿¿¿¿¿¿¿¿
+    - ¿¿¿¿¿¿¿¿¿¿¿¿¿¿
+    - ```/workspace/```¿jupyter notebook¿¿¿¿¿¿¿¿¿¿¿¿¿
 
-### ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆãƒ¦ãƒ¼ã‚¶ãƒ¼ã«ã¤ã„ã¦
+### ¿¿¿¿¿¿¿¿¿¿¿¿¿
 hoge: sudoer
 
 
-## ä¸­èº«
+## ¿¿
 
-- ãƒ™ãƒ¼ã‚¹
+- ¿¿¿
     - ubuntu16.04
-- è¨ˆç®—ç’°å¢ƒ
-    - opencv 3.3.0 (python3ã®ã¿)
+- ¿¿¿¿
+    - opencv 3.4.1 (python3¿¿)
     - python 3.5.2
     - skitlearn
-    - cuda 8.0
-    - cudnn6
-    - tensorflow 1.3
+    - cuda 9.0
+    - cudnn7
+    - tensorflow latest
     - dlib
     - boost
     - webcolors master
-- é–‹ç™ºãƒ„ãƒ¼ãƒ«
+- ¿¿¿¿¿
     - fish shell
         - peco (Ctrl + r)
         - ect..
@@ -71,8 +79,6 @@ hoge: sudoer
     - jupyter notebook / lab
    
 
-## æ³¨æ„
-```python3```ã¨æ›¸ã‹ãªã‘ã‚Œã°python3ã¯èµ·å‹•ã—ã¾ã›ã‚“ã€‚
-æ‘˜ä¾¿ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆã®pythonã‚’å¤‰æ›´ã—ã¦ãã ã•ã„ã€‚
-jupyterã¯ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆã§å…¨ã¦ã®IPã‹ã‚‰ã®æ¥ç¶šã‚’è¨±å¯ã—ã¦ã„ã¾ã™ã€‚
-jupyter notebookã®åˆæœŸãƒ‘ã‚¹ãƒ¯ãƒ¼ãƒ‰ã‚’è¨­å®šã—ã¦ã„ã¾ã™ãŒã€é©å½“ã«å¤‰æ›´ã—ã¦ä½¿ã£ã¦ãã ã•ã„ã€‚
+## ¿¿
+```python3```¿¿¿¿¿¿¿python3¿¿¿¿¿¿¿¿
+¿¿¿¿¿¿¿¿python¿¿¿¿¿¿¿¿¿¿
