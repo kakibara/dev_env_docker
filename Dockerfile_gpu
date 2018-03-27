@@ -186,7 +186,7 @@ RUN sudo apt-get update \
 ## set jupyter notebook
 ADD jupyter-init-setting-python3.py /workspace/
 ADD run_jupyter.sh /workspace/
-RUN chmod +x /workspace/run_jupyter.sh \
+RUN sudo chmod +x /workspace/run_jupyter.sh \
 &&  jupyter notebook --generate-config
 ## set matplotlib backend
 RUN mkdir ~/.config/matplotlib \
