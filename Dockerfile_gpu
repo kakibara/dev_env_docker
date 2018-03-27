@@ -184,10 +184,10 @@ RUN sudo apt-get update \
 &&  sudo chmod +x /usr/local/bin/rsub 
 
 ## set jupyter notebook
-&&  jupyter notebook --generate-config
 ADD jupyter-init-setting-python3.py /workspace/
 ADD run_jupyter.sh /workspace/
-RUN chmod +x /workspace/run_jupyter.sh
+RUN chmod +x /workspace/run_jupyter.sh \
+&&  jupyter notebook --generate-config
 ## set matplotlib backend
 RUN mkdir ~/.config/matplotlib \
 &&  echo 'backend : Qt4Agg' >> $HOME/.config/matplotlib/matplotlibrc
