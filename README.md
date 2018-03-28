@@ -29,6 +29,7 @@ docker build -t image_name -f Dockerfile_gpu --build-arg USER_NAME='your name' -
 ### cerate container
 You can use bash or fish shell.
 When you want to set up jupyter notebook configure, please use this script.
+Note that this container start at `/workspace`.
 - bash
 ```bash
 nvidia-docker run --rm -it -p 8888:8888 sakakib/opencv bash
@@ -41,6 +42,12 @@ nvidia-docker run --rm -it -p 8888:8888 sakakib/opencv fish
 ```bash
 nvidia-docker run --rm -it -p 8888:8888 sakakib/opencv:latest.gpu ./run_jupyter.sh
 ```
+Please note that you shouldn't mount host directory on `/workspace` when you want to use jupyter script. Just do as following.
+```bash
+nvidia-docker run --rm -it -v ${hoge}:/workspace/docs -p 8888:8888 sakakib/opencv:latest.gpu ./run_jupyter.sh
+```
+
+### tools
 - jupyter setting script
 ```bash
 python3 jupyter-init-setting-python3.py
