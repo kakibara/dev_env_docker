@@ -46,13 +46,7 @@ Please note that you shouldn't mount host directory on `/workspace` when you wan
 ```bash
 nvidia-docker run --rm -it -v ${hoge}:/workspace/docs -p 8888:8888 sakakib/opencv:latest.gpu ./run_jupyter.sh
 ```
-
-### tools
-- jupyter setting script
-```bash
-python3 jupyter-init-setting-python3.py
-```
-
+This is a discription about settings.
 - ```-p 8888:8888``` jupuyter notebook
 - ```-p 52698:52698``` rsub(for sublime text)
 - ```jupyter-init-setting-python3.py``` make following settings
@@ -60,8 +54,12 @@ python3 jupyter-init-setting-python3.py
     - set jupyter notebook's home directory as /workspace
     - allow access from all ip
 
+### tools
+- jupyter setting script
+```bash
+python3 jupyter-init-setting-python3.py
+```
 default user is hoge(sudoer)
-
 
 ## packages
 
