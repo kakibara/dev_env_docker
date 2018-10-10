@@ -1,5 +1,7 @@
 
 # Docker for machine learing
+## note
+Dockerfile_cpu is too old and not unmaintened
 ## overview
 Thete are GPU vesion and CPU version.
 You can pull image or build by yourself.
