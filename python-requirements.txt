@@ -1,0 +1,17 @@
+numpy
+scipy
+scikit-learn
+pandas
+xlrd
+pypdf2
+h5py
+keras
+PyWavelets
+pydicom
+matplotlib
+tensorflow-gpu
+pylint
+ipython
+jupyter
+jupyterlab
+

@@ -15,7 +15,7 @@ print("Following will be added to %s " % (jupyter_config))
 configs = [
     "c.NotebookApp.password = u'%s'" % (pwhash),
     "c.NotebookApp.open_browser = False",
-    "c.NotebookApp.ip = '*'",
+    "c.NotebookApp.ip = '0.0.0.0'",
     "c.NotebookApp.notebook_dir = u'/workspace/'" 
 ]
 print(line)

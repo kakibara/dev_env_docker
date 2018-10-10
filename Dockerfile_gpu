@@ -25,16 +25,18 @@ RUN apt-get update && apt-get install -y git apt-file pkg-config wget unzip \
                        python3-pip \
                        python3-setuptools \
                        libatlas-dev \
-&&  pip3 install --upgrade pip \
-&&  pip3 install numpy pylint
-### for build opencv 
+&&  python3 -m pip install --upgrade pip 
+WORKDIR /workspace
+ADD python-requirements.txt /workspace/
+RUN pip3 install -r python-requirements.txt
+# ### for build opencv 
 RUN apt-get update \
 &&  apt-get install -y cmake build-essential libgtk2.0-dev\
                        libavcodec-dev libavformat-dev libswscale-dev \
                        libtbb2 libtbb-dev libjpeg-dev libpng-dev libtiff-dev \
                        libjasper-dev libdc1394-22-dev libeigen3-dev libtbb-dev \
                        libopenblas-dev liblapack-dev ffmpeg\
-		       vtk6 tcl-vtk6 python-vtk6 libvtk6-dev
+ 		       vtk6 tcl-vtk6 python-vtk6 libvtk6-dev
 # cal env
 ## install opencv without CUDA
 WORKDIR /root
@@ -98,20 +100,8 @@ RUN wget https://github.com/davisking/dlib/archive/${DLIB_VERSION}.zip \
 
 ## tensorflow and jupyter notebook lab
 WORKDIR /root
-RUN pip3 install tensorflow-gpu \
-&&  pip3 install jupyter \
-&&  pip3 install jupyterlab \
-&&  jupyter serverextension enable --py jupyterlab --sys-prefix \
-&&  python3 -m IPython kernelspec install-self \
-## other python packages
-&&  pip3 install scikit-learn \
-                 pandas \
-                 xlrd\
-                 pypdf2 \
-                 h5py \
-                 keras \
-                 PyWavelets \
-                 pydicom
+RUN jupyter serverextension enable --py jupyterlab --sys-prefix \
+&&  python3 -m IPython kernelspec install-self
 
 # webcolors
 ARG WEBCOLORS_VERSION="master"
@@ -184,8 +174,8 @@ RUN sudo apt-get update \
 &&  sudo chmod +x /usr/local/bin/rsub 
 
 ## set jupyter notebook
-ADD jupyter-init-setting-python3.py /workspace/
-ADD run_jupyter.sh /workspace/
+ADD jupyter-init-setting-python3.py /opt/
+ADD run_jupyter.sh /opt/
 RUN sudo chmod +x /workspace/run_jupyter.sh \
 &&  jupyter notebook --generate-config
 ## set matplotlib backend

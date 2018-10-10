@@ -1,3 +1,3 @@
 #!/usr/bin/fish
 
-fisher install z omf/theme-agnoster omf/peco
+fisher add z omf/theme-agnoster omf/peco
