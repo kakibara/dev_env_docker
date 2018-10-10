@@ -27,9 +27,8 @@ RUN apt-get update && apt-get install -y git apt-file pkg-config wget unzip \
                        libatlas-dev \
 &&  python3 -m pip install --upgrade pip 
 WORKDIR /workspace
-ADD python-requirements.txt /workspace/
-RUN pip3 install -r python-requirements.txt
-# ### for build opencv 
+### for build opencv 
+RUN pip3 install numpy scipy
 RUN apt-get update \
 &&  apt-get install -y cmake build-essential libgtk2.0-dev\
                        libavcodec-dev libavformat-dev libswscale-dev \
@@ -97,6 +96,12 @@ RUN wget https://github.com/davisking/dlib/archive/${DLIB_VERSION}.zip \
 &&  python3 setup.py install \
 &&  cd .. \
 &&  rm -r dlib*
+
+## install python packages
+WORKDIR /workspace
+ADD python-requirements.txt /workspace/
+ADD python-requirements.txt /workspace/
+RUN pip3 install -r python-requirements.txt
 
 ## tensorflow and jupyter notebook lab
 WORKDIR /root
