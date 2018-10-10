@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 from notebook.auth import passwd 
 import os
 

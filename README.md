@@ -39,11 +39,11 @@ nvidia-docker run --rm -it -p 8888:8888 sakakib/opencv fish
 ```
 - jupyter script
 ```bash
-nvidia-docker run --rm -it -p 8888:8888 sakakib/opencv:latest.gpu ./run_jupyter.sh
+nvidia-docker run --rm -it -p 8888:8888 sakakib/opencv:latest.gpu run_jupyter.sh
 ```
 - jupyter setting script
 ```bash
-python3 jupyter-init-setting-python3.py
+jupyter-init-setting-python3.py
 ```
 
 - ```-p 8888:8888``` jupuyter notebook

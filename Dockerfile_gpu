@@ -174,14 +174,17 @@ RUN sudo apt-get update \
 &&  sudo chmod +x /usr/local/bin/rsub 
 
 ## set jupyter notebook
-ADD jupyter-init-setting-python3.py /opt/
-ADD run_jupyter.sh /opt/
-RUN sudo chmod +x /workspace/run_jupyter.sh \
+ADD jupyter-init-setting-python3.py /opt/scripts/bin/
+ADD run_jupyter.sh /opt/scripts/bin/
+RUN sudo chmod +x /opt/scripts/bin/run_jupyter.sh \
+&&  sudo chmod +x /opt/scripts/bin/jupyter-init-setting-python3.py \
 &&  jupyter notebook --generate-config
 ## set matplotlib backend
 RUN mkdir ~/.config/matplotlib \
 &&  echo 'backend : Qt4Agg' >> $HOME/.config/matplotlib/matplotlibrc
-
+ENV PATH $PATH:/opt/scripts/bin
 # install ssh
 WORKDIR /workspace
 RUN sudo chown -R $USER_NAME:$USER_NAME /workspace
+
+CMD run_jupyter.sh
