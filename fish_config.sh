@@ -1,3 +1,3 @@
 #!/usr/bin/fish
 
-fisher add z omf/theme-agnoster omf/peco
+fisher add z oh-my-fish/theme-agnoster oh-my-fish/peco
