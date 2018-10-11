@@ -97,31 +97,19 @@ RUN wget https://github.com/davisking/dlib/archive/${DLIB_VERSION}.zip \
 &&  cd .. \
 &&  rm -r dlib*
 
-## install python packages
-WORKDIR /workspace
-ADD python-requirements.txt /workspace/
-ADD python-requirements.txt /workspace/
-RUN pip3 install -r python-requirements.txt
 
-## tensorflow and jupyter notebook lab
+## install juila lang
 WORKDIR /root
-RUN jupyter serverextension enable --py jupyterlab --sys-prefix \
-&&  python3 -m IPython kernelspec install-self
-
-# webcolors
-ARG WEBCOLORS_VERSION="master"
-RUN wget https://github.com/ubernostrum/webcolors/archive/${WEBCOLORS_VERSION}.zip \
-&&  unzip ${WEBCOLORS_VERSION}.zip \
-&&  rm ${WEBCOLORS_VERSION}.zip \
-&&  cd webcolors* \
-&&  python3 setup.py install \
-&&  cd .. \
-&&  rm -rf webcolors* 
+RUN wget -O - 'https://julialang-s3.julialang.org/bin/linux/x64/1.0/julia-1.0.1-linux-x86_64.tar.gz' | tar zxf - \
+&&  cd julia* \
+&&  rm LICENSE.md \
+&&  cp -r * /usr/local/ \
+&&  cd .. && rm -rf julia*
 
 
-# tools env
-## make sudo user
-# crypt(passwd, salt)
+# user settings
+
+## make user
 ARG USER_NAME='hoge'
 ARG UID='1000'
 ARG PASSWD='password'
@@ -130,66 +118,55 @@ RUN apt-get update \
 &&  echo ${USER_NAME}' ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers \
 &&  useradd -u ${UID} -G sudo -p `perl -e "print(crypt('${PASSWD}', 'wN'));"` ${USER_NAME} \
 &&  mkdir /home/${USER_NAME} \
-&&  chown ${USER_NAME}:${USER_NAME} /home/${USER_NAME}
+&&  chown -R ${USER_NAME}:${USER_NAME} /home/${USER_NAME}
 
 USER ${USER_NAME}
 WORKDIR /home/${USER_NAME}
 
-# install fish shell and arounds
-## install powerline fonts
-ARG POWERLINEFONT_VERSION="master"
-RUN wget https://github.com/powerline/fonts/archive/${POWERLINEFONT_VERSION}.zip \
-&&  unzip ${POWERLINEFONT_VERSION}.zip \
-&&  rm ${POWERLINEFONT_VERSION}.zip \
-&&  cd fonts*  \
-&&  ./install.sh  \
-&&  cd .. \
-&&  rm -rf fonts* \
-&&  fc-cache -vf ~/.local/share/fonts/
-ENV LC_CTYPE='ja_JP.UTF-8'
+## set jupyter notebook
+ADD jupyter-init-setting-python3.py /opt/scripts/bin/
+ADD run_jupyter.sh /opt/scripts/bin/
+RUN sudo -H pip3 install ipython jupyter jupyterlab \
+&&  sudo jupyter serverextension enable --py jupyterlab --sys-prefix \
+&&  sudo python3 -m IPython kernelspec install-self \
+&&  sudo chmod +x /opt/scripts/bin/run_jupyter.sh \
+&&  sudo chmod +x /opt/scripts/bin/jupyter-init-setting-python3.py \
+&&  jupyter notebook --generate-config \
+## set matplotlib backend
+&&  mkdir -p ~/.config/matplotlib \
+&&  echo 'backend : Qt4Agg' >> $HOME/.config/matplotlib/matplotlibrc
+ENV PATH $PATH:/opt/scripts/bin
 
-### install fish
-RUN mkdir ~/.config \
-&&  mkdir ~/.config/fish
+## install fish shell and arounds
+###  add config file
+RUN mkdir -p ~/.config/fish
 ADD config.fish /home/${USER_NAME}/.config/fish/
 ADD fish_config.sh /home/${USER_NAME}/
-RUN sudo chmod +x fish_config.sh \
+ADD peco_select_history.fish /home/${USER_NAME}/.config/fish/functions/
+### install fish shell
+RUN sudo chown -R ${USER_NAME}:${USER_NAME} /home/${USER_NAME} \
+&&  sudo chmod +x fish_config.sh \
 &&  sudo add-apt-repository ppa:fish-shell/release-2 \
 &&  sudo apt-get update \
-&&  sudo apt-get install -y fish \
-&&  sudo apt-get -y install language-pack-ja-base \
-#### install fisherman
+&&  sudo apt-get install -y fish language-pack-ja-base fonts-powerline \
+### install fisherman
 &&  curl -Lo ~/.config/fish/functions/fisher.fish --create-dirs git.io/fisher \
 &&  sudo chmod +x fish_config.sh \
 &&  ./fish_config.sh \
 &&  rm fish_config.sh \
-#### install peco
-&&  wget -O - 'https://github.com/peco/peco/releases/download/v0.5.1/peco_linux_amd64.tar.gz' | tar zxvf - \
+### install peco
+&&  wget -O - 'https://github.com/peco/peco/releases/download/v0.5.2/peco_linux_amd64.tar.gz' | tar zxvf - \
 &&  sudo mv peco_linux_amd64/peco /usr/local/bin/ \
 &&  rm -rf peco_linux_amd64 \
-#### set fish shell as a default
+### set fish shell as a default
 &&  sudo chsh -s /usr/bin/fish \
 &&  sudo chsh -s /usr/bin/fish ${USER_NAME}
+ENV LC_CTYPE='ja_JP.UTF-8'
 
-# install editor
-RUN sudo apt-get update \
-&&  sudo apt-get install -y vim \
-## install rsub for sublime text via ssh
-&&  sudo wget -O /usr/local/bin/rsub https://raw.github.com/aurora/rmate/master/rmate \
-&&  sudo chmod +x /usr/local/bin/rsub 
+## install additional packages
+ADD python-requirements.txt /home/${USER_NAME}/
+RUN sudo -H pip3 install -r python-requirements.txt
 
-## set jupyter notebook
-ADD jupyter-init-setting-python3.py /opt/scripts/bin/
-ADD run_jupyter.sh /opt/scripts/bin/
-RUN sudo chmod +x /opt/scripts/bin/run_jupyter.sh \
-&&  sudo chmod +x /opt/scripts/bin/jupyter-init-setting-python3.py \
-&&  jupyter notebook --generate-config
-## set matplotlib backend
-RUN mkdir ~/.config/matplotlib \
-&&  echo 'backend : Qt4Agg' >> $HOME/.config/matplotlib/matplotlibrc
-ENV PATH $PATH:/opt/scripts/bin
-# install ssh
 WORKDIR /workspace
 RUN sudo chown -R $USER_NAME:$USER_NAME /workspace
-
 CMD run_jupyter.sh

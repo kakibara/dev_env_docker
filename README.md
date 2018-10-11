@@ -28,32 +28,44 @@ This Dockerfile make an user in image. You can change user name, UID and passwor
 ```bash
 docker build -t image_name -f Dockerfile_gpu --build-arg USER_NAME='your name' --build-arg UID='your UID' .
 ```
+
+If you want to add some python packages, please edit ```python-requirements.txt```.
+Please note that following packages are already installed before installing packages written in ```python-requirements.txt```.
+
+- numpy
+- scipy
+- opencv
+- ipython
+- jupyter notebook
+- jupyter lab
+
 ### cerate container
 You can use bash or fish shell.
 When you want to set up jupyter notebook configure, please use this script.
 - bash
 ```bash
-nvidia-docker run --rm -it -p 8888:8888 sakakib/opencv bash
+nvidia-docker run --rm -it -v $(pwd):/workspace/ -p 8888:8888 sakakib/opencv bash
 ```
 - fish shell.
 ```bash
-nvidia-docker run --rm -it -p 8888:8888 sakakib/opencv fish
+nvidia-docker run --rm -it -v (pwd):/workspace/ -p 8888:8888 sakakib/opencv fish
 ```
-- jupyter script
+- run jupyter lab directory
 ```bash
 nvidia-docker run --rm -it -p 8888:8888 sakakib/opencv:latest.gpu run_jupyter.sh
 ```
-- jupyter setting script
-```bash
-jupyter-init-setting-python3.py
-```
 
-- ```-p 8888:8888``` jupuyter notebook
-- ```-p 52698:52698``` rsub(for sublime text)
-- ```jupyter-init-setting-python3.py``` make following settings
-    - set password of jupyter notebook
-    - set jupyter notebook's home directory as /workspace
-    - allow access from all ip
+### original script
+following original scripts are installed in ```/opt/script/bin```.
+
+- ```run_jupyter.sh```
+- ```jupyter-init-setting-python3.py```
+
+```jupyter-init-setting-python3.py``` make following settings
+
+- set password of jupyter notebook
+- set jupyter notebook's home directory as /workspace
+- allow access from all ip
 
 default user is hoge(sudoer)
 
@@ -63,20 +75,17 @@ default user is hoge(sudoer)
 - base
     - ubuntu16.04
 - packages
-    - opencv 3.4.1 (python3¿¿)
     - python 3.5.2
-    - skitlearn
     - cuda 9.0
     - cudnn7
-    - tensorflow latest
     - dlib
     - boost
-    - webcolors master
 - shell
     - fish shell
         - peco (Ctrl + r)
         - ect..
     - powerlinefont
+- others
     - jupyter notebook / lab
-   
+    - follow pythonreqirement.txt 
 
