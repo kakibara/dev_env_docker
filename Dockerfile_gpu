@@ -135,6 +135,7 @@ RUN sudo -H pip3 install ipython jupyter jupyterlab \
 ## set matplotlib backend
 &&  mkdir -p ~/.config/matplotlib \
 &&  echo 'backend : Qt4Agg' >> $HOME/.config/matplotlib/matplotlibrc
+COPY custom.css ~/.jupyter/custom/
 ENV PATH $PATH:/opt/scripts/bin
 
 ## install fish shell and arounds
