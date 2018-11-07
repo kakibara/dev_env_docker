@@ -171,3 +171,4 @@ RUN sudo -H pip3 install -r python-requirements.txt
 WORKDIR /workspace
 RUN sudo chown -R $USER_NAME:$USER_NAME /workspace
 CMD run_jupyter.sh
+RUN sudo apt install -y vim
