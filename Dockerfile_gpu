@@ -1,39 +1,32 @@
-FROM nvidia/cuda:9.0-cudnn7-runtime-ubuntu16.04
+FROM nvidia/cuda:9.2-cudnn7-runtime-ubuntu18.04
 
 MAINTAINER Sakakibara Akiyuki <moritarizumu@gmail.com>
 
-ARG OPENCV_VERSION="3.4.1"
-ARG PYTHON_VERSION="3.5"
+ENV DEBIAN_FRONTEND=noninteractive
 
-# set cudnn versio
-RUN apt-get update \
-&&  apt-get install -y --allow-downgrades --no-install-recommends \
-                    libcudnn7=7.0.5.15-1+cuda9.0 \
-		    libcudnn7-dev=7.0.5.15-1+cuda9.0 \
-&&  rm -rf /var/lib/apt/lists/* \
-&&  apt-get update
+ARG OPENCV_VERSION="3.4.2"
+ARG PYTHON_VERSION="3.6"
+
 
 ### package needed
-RUN apt-get update && apt-get install -y git apt-file pkg-config wget unzip \
-&&  apt-file update \
-&&  apt-file search add-apt-repository \
-&&  apt-get install -y software-properties-common \
-                       python-software-properties \
-                       apt-transport-https \
+RUN apt-get update \
+&&  apt-get install -y git pkg-config wget unzip fish \
+                       vim language-pack-ja-base \
+                       fonts-powerline 
 ### python install
-&&  apt-get install -y python3-dev \
+RUN apt-get update && apt-get install -y python${PYTHON_VERSION}-dev\
                        python3-pip \
                        python3-setuptools \
-                       libatlas-dev \
+                       libatlas-base-dev \
 &&  python3 -m pip install --upgrade pip 
 WORKDIR /workspace
 ### for build opencv 
 RUN pip3 install numpy scipy
 RUN apt-get update \
-&&  apt-get install -y cmake build-essential libgtk2.0-dev\
+&&  apt-get install -y cmake build-essential libgtk2.0-dev libeigen3-dev \
                        libavcodec-dev libavformat-dev libswscale-dev \
                        libtbb2 libtbb-dev libjpeg-dev libpng-dev libtiff-dev \
-                       libjasper-dev libdc1394-22-dev libeigen3-dev libtbb-dev \
+                       libdc1394-22-dev libeigen3-dev libtbb-dev \
                        libopenblas-dev liblapack-dev ffmpeg\
  		       vtk6 tcl-vtk6 python-vtk6 libvtk6-dev
 # cal env
@@ -68,9 +61,9 @@ RUN wget https://github.com/opencv/opencv/archive/${OPENCV_VERSION}.zip \
       -D PYTHON3_EXECUTABLE=/usr/bin/python3 \
       -D PYTHON3_INCLUDE_DIR=/usr/include/python${PYTHON_VERSION}m \
       -D PYTHON3_LIBRARY=/usr/lib/x86_64-linux-gnu/libpython${PYTHON_VERSION}m \
-      -D PYTHON3_NUMPY_INCLUDE_DIRS=/usr/local/lib/python3.5/dist-packages/numpy/core/include \
-      -D PYTHON3_PACKAGES_PATH=/usr/local/lib/python3.5/dist-packages \
-      -D PY_PIP=/usr/local/lib/python3.5/dist-packages/pip \
+      -D PYTHON3_NUMPY_INCLUDE_DIRS=/usr/local/lib/python${PYTHON_VERSION}/dist-packages/numpy/core/include \
+      -D PYTHON3_PACKAGES_PATH=/usr/local/lib/python${PYTHON_VERSION}/dist-packages \
+      -D PY_PIP=/usr/local/lib/python${PYTHON_VERSION}/dist-packages/pip \
       .. \
 &&  make -j$(nproc) \
 &&  make install \
@@ -107,6 +100,11 @@ RUN wget -O - 'https://julialang-s3.julialang.org/bin/linux/x64/1.0/julia-1.0.1-
 &&  cd .. && rm -rf julia*
 
 
+## install python packages
+RUN pip3 install numpy scipy scikit-learn pandas xlrd pypdf2 h5py keras \
+                 PyWavelets pydicom matplotlib tensorflow-gpu pylint ipython \
+                 jupyter jupyterlab torch torchvision PyMaxflow edward 
+
 # user settings
 
 ## make user
@@ -122,6 +120,7 @@ RUN apt-get update \
 
 USER ${USER_NAME}
 WORKDIR /home/${USER_NAME}
+
 
 ## set jupyter notebook
 ADD jupyter-init-setting-python3.py /opt/scripts/bin/
@@ -145,18 +144,16 @@ ADD config.fish /home/${USER_NAME}/.config/fish/
 ADD fish_config.sh /home/${USER_NAME}/
 ADD peco_select_history.fish /home/${USER_NAME}/.config/fish/functions/
 ### install fish shell
-RUN sudo chown -R ${USER_NAME}:${USER_NAME} /home/${USER_NAME} \
+RUN sudo apt-get update && sudo apt-get install -y curl \
+&&  sudo chown -R ${USER_NAME}:${USER_NAME} /home/${USER_NAME} \
 &&  sudo chmod +x fish_config.sh \
-&&  sudo add-apt-repository ppa:fish-shell/release-2 \
-&&  sudo apt-get update \
-&&  sudo apt-get install -y fish language-pack-ja-base fonts-powerline \
 ### install fisherman
 &&  curl -Lo ~/.config/fish/functions/fisher.fish --create-dirs git.io/fisher \
 &&  sudo chmod +x fish_config.sh \
 &&  ./fish_config.sh \
 &&  rm fish_config.sh \
 ### install peco
-&&  wget -O - 'https://github.com/peco/peco/releases/download/v0.5.2/peco_linux_amd64.tar.gz' | tar zxvf - \
+&&  wget -O - 'https://github.com/peco/peco/releases/download/v0.5.3/peco_linux_amd64.tar.gz' | tar zxvf - \
 &&  sudo mv peco_linux_amd64/peco /usr/local/bin/ \
 &&  rm -rf peco_linux_amd64 \
 ### set fish shell as a default
@@ -164,11 +161,35 @@ RUN sudo chown -R ${USER_NAME}:${USER_NAME} /home/${USER_NAME} \
 &&  sudo chsh -s /usr/bin/fish ${USER_NAME}
 ENV LC_CTYPE='ja_JP.UTF-8'
 
-## install additional packages
-ADD python-requirements.txt /home/${USER_NAME}/
-RUN sudo -H pip3 install -r python-requirements.txt
 
+# # change UID and GID
+# USER root
+# ARG GROUP_NAME=dockeruser
+# ARG UID=1000
+# ARG GID=1000
+# ARG USER_NAME=god
+# RUN if [ ${UID} = 1000 ]; then \
+#   echo UID is $UID ; \
+#   sudo usermod -l $USER_NAME hoge ; \
+#     else \
+#   usermod -u ${UID} ${USER_NAME} ; \
+#   echo change UID: UID is $UID ; \
+# fi \
+# && if [ ${GID} = 1000 ]; then \
+#   echo GID is $GID ; \
+#   export GROUP_NAME=$USER_NAME ; \
+#     else \
+#   groupadd -g ${GID} $GROUP_NAME ; \
+#   echo change GID: GID is $GID ; \
+# fi \
+# &&  mv /home/hoge /home/$USER_NAME \
+# &&  chown -R ${USER_NAME}:${GROUP_NAME} /home/${USER_NAME}
+  
+## install python packages
+ADD python-requirements-additional.txt /home/${USER_NAME}/
+RUN pip3 install -r python-requirements-additional.txt
+
+USER ${USER_NAME}
 WORKDIR /workspace
-RUN sudo chown -R $USER_NAME:$USER_NAME /workspace
+RUN sudo chown -R $USER_NAME:$GROUP_NAME /workspace
 CMD run_jupyter.sh
-RUN sudo apt install -y vim
