@@ -143,7 +143,6 @@ ADD peco_select_history.fish /home/${USER_NAME}/.config/fish/functions/
 ### install fish shell
 RUN sudo chown -R ${USER_NAME}:${USER_NAME} /home/${USER_NAME} \
 &&  sudo chmod +x fish_config.sh \
-&&  sudo add-apt-repository ppa:fish-shell/release-2 \
 &&  sudo apt-get update \
 &&  sudo apt-get install -y fish language-pack-ja-base fonts-powerline \
 ### install fisherman
