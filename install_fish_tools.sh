@@ -6,7 +6,7 @@ curl -Lo ${HOME}/.config/fish/functions/fisher.fish --create-dirs git.io/fisher
 
 # copy files
 cp peco_select_history.fish ${HOME}/.config/fish/functions/
-co config.fish ${HOME}/.config/fish/
+cp config.fish ${HOME}/.config/fish/
 sudo chmod +x fish_config.sh
 
 # install tools
