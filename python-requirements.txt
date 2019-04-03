@@ -1,4 +1,5 @@
 numpy
+opencv-python
 scipy
 scikit-learn
 pandas
