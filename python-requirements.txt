@@ -4,6 +4,7 @@ scipy
 scikit-learn
 pandas
 xlrd
+setuptools
 pypdf2
 h5py
 keras
