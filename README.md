@@ -1,5 +1,13 @@
 
 # Docker for machine learing
+# Overview
+Dockerfiles for ML.
+There are three types.
+
+- for CPU: Dockerfile
+- for NVIDIA GPU: Dockerfile_gpu
+- for RADEON GPU: Dockerfile_rocm
+
 ## note
 Dockerfile_cpu is too old and not unmaintened
 ## overview
