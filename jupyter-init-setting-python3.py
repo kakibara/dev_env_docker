@@ -18,7 +18,7 @@ configs = [
     "c.NotebookApp.password = u'%s'" % (pwhash),
     "c.NotebookApp.open_browser = False",
     "c.NotebookApp.ip = '0.0.0.0'",
-    "c.NotebookApp.notebook_dir = u'/workspace/'" 
+#    "c.NotebookApp.notebook_dir = u'/workspace/'" 
 ]
 print(line)
 _ = [print(z) for z in configs]

@@ -1,0 +1,92 @@
+FROM rocm/tensorflow
+
+MAINTAINER Sakakibara Akiyuki <moritarizumu@gmail.com>
+
+### package needed
+USER root
+
+RUN apt-get update && apt-get install -y git tig wget unzip aria2 \
+### python install
+&&  apt-get install -y python3-dev \
+                       python3-pip \
+                       python3-setuptools \
+                       libatlas-dev \
+&&  python3 -m pip install --upgrade pip 
+RUN apt-get update \
+&&  apt-get install -y libgtk2.0-dev libavcodec-dev libavformat-dev libswscale-dev \
+                       libtbb2 libtbb-dev libjpeg-dev libpng-dev libtiff-dev \
+                       libjasper-dev libdc1394-22-dev libeigen3-dev libtbb-dev \
+                       libopenblas-dev liblapack-dev ffmpeg\
+ 		       vtk6 tcl-vtk6 python-vtk6 libvtk6-dev
+## set jupyter notebook
+ADD jupyter-init-setting-python3.py /opt/scripts/bin/
+ADD run_jupyter.sh /opt/scripts/bin/
+RUN pip3 install ipython jupyter jupyterlab \
+&&  jupyter serverextension enable --py jupyterlab --sys-prefix \
+&&  python3 -m IPython kernelspec install-self \
+&&  chmod +x /opt/scripts/bin/run_jupyter.sh \
+&&  chmod +x /opt/scripts/bin/jupyter-init-setting-python3.py \
+&&  jupyter notebook --generate-config \
+## set matplotlib backend
+&&  mkdir -p ~/.config/matplotlib \
+&&  echo 'backend : Qt4Agg' >> $HOME/.config/matplotlib/matplotlibrc
+COPY custom.css ~/.jupyter/custom/
+ENV PATH $PATH:/opt/scripts/bin
+
+
+## install additional packages
+ADD python-requirements_rocm.txt .
+RUN pip3 install -r python-requirements_rocm.txt
+
+## install juila lang
+RUN wget -O - 'https://julialang-s3.julialang.org/bin/linux/x64/1.1/julia-1.1.0-linux-x86_64.tar.gz' | tar zxf - \
+&&  cd julia* \
+&&  rm LICENSE.md \
+&&  cp -r * /usr/local/ \
+&&  cd .. && rm -rf julia* \
+&&  julia -e 'using Pkg; \
+              Pkg.add(["IJulia", "Images", "QuartzImageIO", "FileIO",  "Wavelets", \
+                       "Flux", "PyCall", "StatsBase", "Distributions", "MLBase", \
+                       "OpenCL", "TimeSeries" ])'
+# user settings
+
+## make user
+ARG USER_NAME='hoge'
+ARG UID='1000'
+ARG PASSWD='password'
+RUN apt-get update \
+&&  apt-get install -y sudo \
+&&  echo ${USER_NAME}' ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers \
+&&  useradd -m -k /root -u ${UID} -G sudo -p `perl -e "print(crypt('${PASSWD}', 'wN'));"` ${USER_NAME} \
+&&  chown -R ${USER_NAME}:${USER_NAME} /home/${USER_NAME}
+
+USER ${USER_NAME} 
+WORKDIR /home/${USER_NAME}
+ENV HOME /home/${USER_NAME}
+## install fish shell and arounds
+###  add config file
+ADD config.fish ${HOME}/.config/fish/
+ADD fish_config.sh ${HOME}/
+ADD peco_select_history.fish ${HOME}/.config/fish/functions/
+RUN sudo chown -R ${USER_NAME}:${USER_NAME} /home/${USER_NAME} \
+&&  mkdir -p ${HOME}/.config/fish
+### install fish shell
+RUN chmod +x fish_config.sh \
+&&  sudo apt-get update \
+&&  sudo apt-get install -y fish curl language-pack-ja-base fonts-powerline \
+### install fisherman
+&&  curl -Lo ${HOME}/.config/fish/functions/fisher.fish --create-dirs git.io/fisher \
+&&  sudo chmod +x fish_config.sh \
+&&  ./fish_config.sh \
+&&  rm fish_config.sh \
+### install peco
+&&  wget -O - 'https://github.com/peco/peco/releases/download/v0.5.2/peco_linux_amd64.tar.gz' | tar zxf - \
+&&  sudo mv peco_linux_amd64/peco /usr/local/bin/ \
+&&  rm -rf peco_linux_amd64
+# ### set fish shell as a default
+# &&  sudo chsh -s /usr/bin/fish \
+# &&  sudo chsh -s /usr/bin/fish ${USER}
+ENV LC_CTYPE='ja_JP.UTF-8'
+RUN sudo chown -R ${USER_NAME}:${USER_NAME} /home/${USER_NAME}
+
+CMD run_jupyter.sh
